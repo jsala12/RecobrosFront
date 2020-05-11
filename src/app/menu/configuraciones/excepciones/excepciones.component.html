@@ -1,0 +1,28 @@
+<ngx-alerts></ngx-alerts>
+<ngx-spinner
+    size="medium"
+    color="#fff"
+    type="ball-fussion"
+>
+<br>    
+<img src="./assets/logo-bogota-blanco.png" alt="Logo del banco">
+</ngx-spinner>
+<h5>
+    Configuración &nbsp;<mat-icon aria-hidden="false" aria-label="Example home icon" title="" style="vertical-align: bottom;">settings</mat-icon>
+    <i class="material-icons" style="vertical-align: bottom;">navigate_next</i>
+    Excepciones &nbsp;<mat-icon aria-hidden="false" aria-label="Example home icon" title="" style="vertical-align: bottom;">contacts</mat-icon>
+</h5>
+<mat-tab-group class="mat-elevation-z8">
+    <mat-tab label="Cliente">
+        <app-cliente></app-cliente>
+    </mat-tab>
+    <mat-tab label="Cuenta">
+        <app-cuenta></app-cuenta>
+    </mat-tab>
+    <mat-tab label="Tipo Producto">
+        <app-tipoproducto></app-tipoproducto>
+    </mat-tab>
+    <mat-tab label="Transacción">
+        <app-transaccion></app-transaccion>
+    </mat-tab>
+</mat-tab-group>

@@ -1,0 +1,365 @@
+<div class="mat-elevation-z8">
+  <br>
+  <div class="container-fluid">
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <div>            
+            Existen <span class="badge badge-pill badge-info">{{dataSource?.data.length}}</span> clientes especiales configurados.
+            <br>
+          </div>
+        </div>
+        <div class="col-6">
+          <button mat-mini-fab id="agregar" title="Registrar un cliente especial" data-toggle="modal" data-target="#exampleModalS" style="padding-top: 0px; float: center;
+          padding-bottom: 0px;" data-backdrop="false" (click)="agregarRegistro()">
+            <i class="material-icons" id="icono">
+              add
+            </i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div> 
+  <br>
+  <table mat-table class="full-width-table" matSort aria-label="Elements">
+    <!-- Tipo Identificación Column -->
+    <ng-container matColumnDef="tipoDocumento">
+      <th mat-header-cell *matHeaderCellDef style="width: 150px">Tipo Id.</th>
+      <td mat-cell *matCellDef="let row">{{row.tipoDocumento}}</td>
+    </ng-container>
+
+    <!-- Número Documento Column -->
+    <ng-container matColumnDef="numDocumento">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 200px">Número Documento</th>
+      <td mat-cell *matCellDef="let row">{{row.numDocumento}}</td>
+    </ng-container>
+
+    <!-- Nombre Cliente Especial Column -->
+    <ng-container matColumnDef="nombreClienteEspecial">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 350px">Nombre Cliente</th>
+      <td mat-cell *matCellDef="let row">{{row.nombreClienteEspecial}}</td>
+    </ng-container>
+
+    <!-- Ver Column -->
+    <ng-container matColumnDef="ver">
+      <th mat-header-cell *matHeaderCellDef  style="width: 100px"></th>
+      <td mat-cell *matCellDef="let row">
+        <button mat-mini-fab id="ver" title="Ver configuración de {{row.nombreClienteEspecial}}" (click)="verRegistro(row)" data-toggle="modal" data-target="#exampleModalV" data-backdrop="false" style="padding-top: 0px;
+        padding-bottom: 0px;float: left;"> <i class="material-icons" id="icono">remove_red_eye</i></button>
+      </td>
+    </ng-container>
+
+    <!-- Editar Column -->
+    <ng-container matColumnDef="editar">
+      <th mat-header-cell *matHeaderCellDef  style="width: 100px"></th>
+      <td mat-cell *matCellDef="let row">
+        <button mat-mini-fab color="primary" title="Editar configuración de {{row.nombreClienteEspecial}}" (click)="editarRegistro(row)" data-toggle="modal" data-target="#exampleModal" data-backdrop="false" style="padding-top: 0px;
+        padding-bottom: 0px;float: left;"> <i class="material-icons" id="icono">edit</i></button>
+      </td>
+    </ng-container>
+
+    <!-- Eliminar Column -->
+    <ng-container matColumnDef="eliminar">
+      <th mat-header-cell *matHeaderCellDef  style="width: 100px"></th>        
+      <td mat-cell *matCellDef="let row">
+        <button mat-mini-fab title="Eliminar configuración de {{row.nombreClienteEspecial}}" id="eliminar" (click)="eliminarRegistro(row)" data-toggle="modal" data-target="#exampleModalE" data-backdrop="false" style="padding-top: 0px;
+        padding-bottom: 0px;float: left;"><i class="material-icons" id="icono">delete</i> </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator #paginator
+      [length]="dataSource?.data.length"
+      [pageIndex]="0"
+      [pageSize]="6"
+      [pageSizeOptions]="">
+  </mat-paginator>
+</div>
+
+<!-- Modal Insertar -->
+<div class="modal fade" id="exampleModalS" aria-labelledby="exampleModalLabel" style="background-color:  rgba(7, 65, 7, 0.5)">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document" >
+    <div class="modal-content" >
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{headerModal}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+          <div class="col-3"></div>
+          <div class="col-6">
+            <br>
+            <form class="example-form">
+              <!--Input Tipo ID de cliente-->              
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Tipo identificación</mat-label>
+                <mat-select  [(value)]="tipoIdent" placeholder="Seleccione tipo de identificación" [formControl]="tipoIdentificacionControl"
+                [errorStateMatcher]="matcher" required id="tipoIdentificacion" #tipoIdentificacion>
+                <mat-option *ngFor="let tipoCA of tipoClientes" [value]="tipoCA.tipo">
+                  {{ tipoCA.detalle }}
+                </mat-option>
+                </mat-select>
+                <mat-error *ngIf="tipoIdentificacionControl.hasError('required')">
+                  Tipo identificación es <strong>requerido</strong>
+                </mat-error>                
+              </mat-form-field>              
+              <!--Input número de documento-->
+              <mat-form-field class="example-full-width" appearance="outline" title="Número de documento del cliente">
+                <mat-label>Identificación cliente</mat-label>
+                <!--<input id="numDocumento" #numDocumento value="{{numeroDocumento}}" type="text" placeholder="Identificación cliente" aria-label="Assignee" matInput [formControl]="myControl">-->
+                <input matInput placeholder="Identificación cliente" [formControl]="myControl" type="text" numbersOnly maxlength="11"
+                  [errorStateMatcher]="matcher" value="{{numeroDocumento}}" id="numDocumento" #numDocumento required >
+                <mat-hint align="end">{{numDocumento.value?.length || 0}}/11</mat-hint>
+                <span matSuffix *ngIf="myControl.hasError('required') || tipoIdentificacionControl.hasError('required')">
+                  <span class="badge badge-pill badge-primary" style="background-color: #D5D2D2" title="Complete el tipo y número de documento para comprobar el cliente"><mat-icon style="margin-top: 8px;" >search</mat-icon></span>  
+                  <!--<button disabled  mat-mini-fab color="primary" title="Complete el tipo y número de documento para comprobar el cliente" (click)="consultarCliente()" style="background-color: blackrgba(0, 0, 0, 0)"><mat-icon >search</mat-icon></button>-->
+                </span>
+                <span matSuffix *ngIf="!myControl.hasError('required') && !tipoIdentificacionControl.hasError('required')">
+                  <span class="badge badge-pill badge-primary" id="agregar" title="Click para verificar el cliente" (click)="consultarCliente()"><mat-icon style="margin-top: 8px;" >search</mat-icon></span>  
+                  <!--<button mat-mini-fab color="primary" title="Click para verificar el cliente" (click)="consultarCliente()" style="background-color: blackrgba(0, 0, 0, 0)"><mat-icon >search</mat-icon></button>-->
+                </span>                 
+                <mat-error *ngIf="myControl.hasError('required')">
+                    Identificación del cliente es <strong>requerida</strong>
+                </mat-error>
+              </mat-form-field>                           
+              <!--Input nombre de cliente-->
+              <mat-form-field class="example-full-width" appearance="outline" title="Campo autocompletado para verificar el usuario">
+                <mat-label>Nombre del cliente</mat-label>
+                <input matInput placeholder="Nombre del cliente" readonly disabled value="{{nombreUsuario}}">
+                <mat-icon matSuffix>assignment_ind</mat-icon>
+              </mat-form-field>
+              <br>              
+              <!--Input código transacción-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Código transacción a configurar</mat-label>
+                <mat-select  [(value)]="selectedCodTransaccion" placeholder="Seleccione código transacción" [formControl]="codigoTransaccionControl"
+                [errorStateMatcher]="matcher" required id="codigoTransaccion" #codigoTransaccion (selectionChange)="cargarCuentasConfiguradas()">
+                  <mat-option *ngFor="let codigoTransaccion of codigosTransaccion" [value]="codigoTransaccion.codigo">
+                    {{ codigoTransaccion.codigo }} - {{ codigoTransaccion.nombre }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="codigoTransaccionControl.hasError('required')">
+                  Código transacción es <strong>requerido</strong>
+                </mat-error>                
+              </mat-form-field>
+              <br>
+              <!--Input cuentas a cobrar-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Seleccione las cuentas a cobrar</mat-label>
+                <mat-select  [formControl]="toppingsCuentas" multiple 
+                [errorStateMatcher]="matcher" id="cuentasCobrar" #cuentasCobrar>
+                  <mat-option *ngFor="let cuenta of cuentas" [value]="cuenta.numero">
+                    {{cuenta.numero}} - {{cuenta.tipo}}, {{cuenta.nombre}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <br>
+              <!--Botón guardar--> 
+              <span *ngIf="myControl.hasError('required') || codigoTransaccionControl.hasError('required') || banderaExcepcionado!=0">
+                  <button mat-raised-button type="submit" title="Complete los campos para guardar" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white" disabled><i class="material-icons"id="icono">save</i>&nbsp;Guardar</button>
+              </span>   
+              <span *ngIf="!myControl.hasError('required') && !codigoTransaccionControl.hasError('required') && banderaExcepcionado==0">
+                  <button mat-raised-button type="submit" title="Guardar" id="agregar" (click)="operacionRegistro(3)" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white"><i class="material-icons"id="icono">save</i>&nbsp;Guardar</button>
+              </span>           
+              <br><br><br>
+            </form>                  
+          </div>
+          <div class="col-3"></div>
+        </div>
+      </div>   
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar -->
+<div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" style="background-color:  rgba(9, 13, 48, 0.5)">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document" >
+    <div class="modal-content" >
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{headerModal}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+          <div class="col-3"></div>
+          <div class="col-6">
+            <br>
+            <form class="example-form">
+              <!--Input número de documento-->
+              <mat-form-field class="example-full-width" appearance="outline" >
+                <mat-label>Identificación cliente</mat-label>
+                <input readonly disabled id="numDocumentoE" #numDocumentoE value="{{numeroDocumento}}" type="text" placeholder="Identificación cliente" aria-label="Assignee" matInput [matAutocomplete]="auto">
+                <mat-icon matSuffix>looks_one</mat-icon>
+                <mat-autocomplete #auto="matAutocomplete">
+                  <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                    {{option.identificacion}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+              <!--Input Tipo ID de cliente-->
+              <mat-form-field class="example-full-width" appearance="outline" title="Campo autocompletado para verificar el usuario">
+                <mat-label>Tipo identificación</mat-label>
+                <input matInput placeholder="Tipo identificación" readonly disabled value="{{tipoIdent}}">
+                <mat-icon matSuffix>credit_card</mat-icon>
+              </mat-form-field>
+              <!--Input nombre de cliente-->
+              <mat-form-field class="example-full-width" appearance="outline" title="Campo autocompletado para verificar el usuario">
+                <mat-label>Nombre del cliente</mat-label>
+                <input matInput placeholder="Nombre del cliente" readonly disabled value="{{nombreUsuario}}">
+                <mat-icon matSuffix>assignment_ind</mat-icon>
+              </mat-form-field>
+              <br>              
+              <!--Input código transacción-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Código transacción a configurar</mat-label>
+                <mat-select  [(value)]="selectedCodTransaccion" placeholder="Seleccione código transacción" [formControl]="codigoTransaccionControlEditar"
+                [errorStateMatcher]="matcher" required id="codigoTransaccionE" #codigoTransaccionE (selectionChange)="cargarCuentasConfiguradas()">
+                  <mat-option *ngFor="let codigoTransaccion of codigosTransaccion" [value]="codigoTransaccion.codigo">
+                    {{ codigoTransaccion.codigo }} - {{ codigoTransaccion.nombre }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="codigoTransaccionControlEditar.hasError('required')">
+                  Código transacción es <strong>requerido</strong>
+                </mat-error>                
+              </mat-form-field>
+              <br>
+              <!--Input cuentas a cobrar-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                  <mat-label>Cuentas a cobrar</mat-label>
+                  <mat-select  [formControl]="toppingsCuentas" multiple 
+                  [errorStateMatcher]="matcher" id="cuentasCobrar" #cuentasCobrar>
+                    <mat-option *ngFor="let cuenta of cuentasTipo" [value]="cuenta.numero">
+                        {{cuenta.numero}} - {{cuenta.tipo}}, {{cuenta.nombre}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              <br>  
+              <!--Botón editar--> 
+              <span *ngIf="codigoTransaccionControlEditar.hasError('required')">
+                  <button mat-raised-button title="Complete los campos para actualizar" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white" disabled color="primary"><i class="material-icons"id="icono">save</i>&nbsp;Actualizar</button>
+              </span>   
+              <span *ngIf="!codigoTransaccionControlEditar.hasError('required')">
+                  <button *ngIf="clienteEspecialTransaccionesL>=2" mat-raised-button title="Actualizar"  (click)="operacionRegistro(1)" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white" color="primary"><i class="material-icons"id="icono">save</i>&nbsp;Actualizar</button>
+                  
+                  <button *ngIf="clienteEspecialTransaccionesL<2 && toppingsCuentas.value.length<1" mat-raised-button title="Actualizar"  (click)="operacionRegistro(1)" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white" color="primary" title="Debe seleccionar por lo menos una cuenta." disabled><i class="material-icons"id="icono" disabled >save</i>&nbsp;Actualizar</button>
+
+                  <button *ngIf="clienteEspecialTransaccionesL<2 && toppingsCuentas.value.length>0" mat-raised-button title="Actualizar"  (click)="operacionRegistro(1)" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white" color="primary" title="Actualizar"><i class="material-icons"id="icono">save</i>&nbsp;Actualizar</button>
+              </span>           
+              <br><br><br>
+            </form>                  
+          </div>
+          <div class="col-3"></div>
+        </div>
+      </div>   
+    </div>
+  </div>
+</div>
+
+<!-- Modal Eliminar -->
+<div class="modal fade" id="exampleModalE" aria-labelledby="exampleModalLabel" style="background-color:  rgba(48, 9, 9, 0.5)">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{headerModal}} </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+              <div class="col-1"></div>
+              <div class="col-10">
+              <br>
+              ¿Desea eliminar la configuración del cliente especial con documento {{identificacionUsuario}}?
+              <br><br>
+          <button mat-raised-button id="eliminar" title="Eliminar cliente especial" (click)="operacionRegistro(2)" data-dismiss="modal" style="padding-top: 0px;
+          padding-bottom: 0px;float: left; color: white;"><i class="material-icons" id="icono">delete</i> Eliminar </button>        
+          <br> <br> <br>      
+        </div>
+        <div class="col-1"></div>
+        </div>
+      </div>    
+    </div>
+  </div>
+</div>
+
+<!-- Modal Ver -->
+<div class="modal fade" id="exampleModalV" aria-labelledby="exampleModalLabel" style="background-color:  rgba(9, 40, 48, 0.6)">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{headerModal}} </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+            <div class="col-1"></div>
+            <div class="col-10">
+              <br>
+              <table>
+                <tr>
+                  <th><h5>Tiene configurados cobros para las transacciones:</h5></th>
+                </tr>
+                <tr *ngFor="let transaccion of clienteEspecialTransacciones">
+                    <td>
+                        - &nbsp;{{transaccion}}
+                    </td>
+                </tr>                                            
+              </table>
+              <br>
+              <h5>Para la transacción:</h5>
+              <mat-form-field class="example-full-width" appearance="outline" style="width: 50%">
+                <mat-label>Seleccione código transacción</mat-label>
+                <mat-select  [(value)]="selectedCodTransaccion" placeholder="Seleccione código transacción" [formControl]="codigoTransaccionControlVer"
+                [errorStateMatcher]="matcher" required id="codigoTransaccionE" #codigoTransaccionE (selectionChange)="cargarCuentasConfiguradas()">
+                  <mat-option *ngFor="let codigoTransaccion of codigosTransaccion" [value]="codigoTransaccion.codigo">
+                    {{ codigoTransaccion.codigo }} - {{ codigoTransaccion.nombre }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="codigoTransaccionControlEditar.hasError('required')">
+                  Código transacción es <strong>requerido</strong>
+                </mat-error>                
+              </mat-form-field>
+              <div *ngIf="selectedCodTransaccion==''">
+                Seleccione el código de transacción a consultar.
+              </div>
+              <div *ngIf="selectedCodTransaccion!=''">                
+                <div *ngIf="cuentasClienteTransaccionCobrarL==0">               
+                  No tiene definido cuentas para cobrar. Se cobrará en cualquier cuenta del cliente.
+                </div>  
+                <div *ngIf="cuentasClienteTransaccionCobrarL>0">
+                    <table>
+                      <tr>
+                        <th><h5>Se cobrará en las cuentas:</h5></th>
+                      </tr>
+                      <tr *ngFor="let cuenta of cuentasClienteTransaccionCobrar">
+                          <td>
+                              - &nbsp;{{cuenta}}
+                          </td>
+                      </tr>                                            
+                    </table>                    
+                  </div>
+                </div>                                                                 
+              <br><br><br>  
+            </div>
+          <div class="col-1"></div>
+        </div>
+      </div>    
+    </div>
+  </div>
+</div>

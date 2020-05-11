@@ -1,0 +1,69 @@
+<mat-sidenav-container class="sidenav-container">    
+  <mat-sidenav style="width: 270px;" class="sidenav" #drawer fixedInViewport
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="(isHandset$ | async) === false">
+    <mat-toolbar id="headerMenu">
+      <a id="home" routerLink="home"><mat-icon aria-hidden="false" aria-label="Example home icon" title="Home">home</mat-icon></a>&nbsp;&nbsp;&nbsp;
+      Menú
+    </mat-toolbar>
+    <mat-nav-list>      
+      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding style="margin-left: -30px;">
+          <button mat-icon-button disabled></button>
+          <a mat-list-item [routerLink]="[node.name]" title="Click para abrir este menú"><mat-icon aria-hidden="false" aria-label="Example home icon" title="{{node.name}}">{{node.nameIcono}}</mat-icon>&nbsp;&nbsp;{{node.name}}</a>
+        </mat-tree-node>
+        <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+          <button mat-icon-button matTreeNodeToggle
+                  [attr.aria-label]="'toggle ' + node.name">
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+            </mat-icon>
+          </button>
+          <a mat-list-item title="Click en '>' para desplegar este menú"><mat-icon aria-hidden="false" aria-label="Example home icon" title="{{node.name}}">{{node.nameIcono}}</mat-icon>&nbsp;&nbsp;{{node.name}}</a>
+        </mat-tree-node>
+      </mat-tree>      
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" id="header">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <div class="row" id="header">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><img src="./assets/logo-bogota-blanco.png" alt="Logo del banco"></div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3"><h4 style="margin-top: 10px;"><span>Módulo de Recobros</span></h4></div>
+         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" >          
+          <p style="margin-top: 10px; font-size: 13px;">
+              <img src="./assets/user.png" alt="Conectado" width="20" title="Usuario"> 
+              {{usLogin}}
+          </p>          
+        </div>
+        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1" > 
+          <p style="margin-top: 10px;">
+              <button mat-button title="Cerrar sesión" id="eliminar" (click)="logout()" style="width: 70%; padding-top: 0px;
+              padding-bottom: 0px;float: center; color: white; background-color: rgba(0, 4, 255, 0)">Salir &nbsp;<img src="./assets/off.png" alt="Cerrar sesión" width="40"></button>
+          </p>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" >          
+          <p style="margin-top: 10px; font-size: 12px; float: right">
+              {{fechaActual}}
+          </p>          
+        </div>        
+    </div>
+    </mat-toolbar>
+    <!-- Add Content Here -->
+    <router-outlet></router-outlet>
+    <!--<app-messages></app-messages>-->
+    <app-footer></app-footer>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+
+
+

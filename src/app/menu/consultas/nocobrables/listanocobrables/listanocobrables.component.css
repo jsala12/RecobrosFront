@@ -1,0 +1,10 @@
+.full-width-table {
+  width: 150%;
+}
+.example-container {
+  width: 100%;
+  overflow: auto;
+}
+tr.mat-footer-row {
+  font-weight: bold;
+}

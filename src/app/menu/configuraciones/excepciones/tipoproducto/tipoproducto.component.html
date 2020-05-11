@@ -1,0 +1,304 @@
+<div class="mat-elevation-z8">
+  <br>
+  <div class="container-fluid">
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <div>            
+            <mat-form-field appearance="outline">
+              <mat-label>Seleccione una opción</mat-label>
+              <mat-select  [(value)]="selectedCatTipProducto" (selectionChange)="filtrarTabla()">
+                  <mat-option *ngFor="let categoriaProducto of categoriaProductos" [value]="categoriaProducto">
+                {{ categoriaProducto }}
+              </mat-option>
+              </mat-select>
+            </mat-form-field>&nbsp;
+            Tiene <span class="badge badge-pill badge-info">{{dataSource?.data.length}}</span> excepciones configuradas.
+            <br>
+          </div>
+        </div>
+        <div class="col-6">
+          <button mat-mini-fab id="agregar" title="Agregar una excepción" data-toggle="modal" data-target="#exampleModalS" style="padding-top: 0px; float: center;
+          padding-bottom: 0px;" data-backdrop="false" (click)="agregarRegistro()">
+            <i class="material-icons" id="icono">
+              add
+            </i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div> 
+  <table mat-table class="full-width-table" matSort aria-label="Elements">
+    <!-- Id Column -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef  style="width: 80px;" mat-sort-header>Id</th>
+      <td mat-cell *matCellDef="let row">{{row.id}}</td>
+    </ng-container>
+
+    <!-- Detalle Column -->
+    <ng-container matColumnDef="detalle">
+      <th mat-header-cell *matHeaderCellDef  style="width: 300px;">Detalle</th>
+      <td mat-cell *matCellDef="let row">{{row.detalle}}</td>
+    </ng-container>
+
+    <!-- Tipo Producto Column -->
+    <ng-container matColumnDef="tipoProducto">
+      <th mat-header-cell *matHeaderCellDef  style="width: 120px;">Tipo Producto</th>
+      <td mat-cell *matCellDef="let row">{{row.tipoProducto}}</td>
+    </ng-container>
+
+    <!-- Fecha Creación Column -->
+    <ng-container matColumnDef="fechaCreacion">
+      <th mat-header-cell *matHeaderCellDef>Fecha Creación</th>
+      <td mat-cell *matCellDef="let row" style="width: 130px;">
+          <span *ngIf="row.fechaCreacion== null">No hay datos</span>
+          <span *ngIf="!row.fechaCreacion== ''" title="Año-Mes-Día">{{row.fechaCreacion | date: 'yyyy-MM-dd'}}</span>
+      </td>
+    </ng-container>
+
+    <!-- Usrautoriza Column -->
+    <ng-container matColumnDef="usrautoriza">
+      <th mat-header-cell *matHeaderCellDef>Autorizó</th>
+      <td mat-cell *matCellDef="let row" style="width: 150px;">
+          <span *ngIf="row.usrautoriza== null">No hay datos</span>
+          <span *ngIf="!row.usrautoriza== ''">{{row.usrautoriza}}</span>
+      </td>
+    </ng-container>
+
+    <!-- Estado Column -->
+    <ng-container matColumnDef="estado">
+      <th mat-header-cell *matHeaderCellDef style="width: 130px;">Estado</th>
+      <td mat-cell *matCellDef="let row">
+          <span class="badge badge-success" *ngIf="row.estado== 'ACTIVO'">{{row.estado}}</span>
+          <span class="badge badge-danger" *ngIf="row.estado== 'INACTIVO'">{{row.estado}}</span>
+      </td>
+    </ng-container>
+
+    <!-- Editar Column -->
+    <ng-container matColumnDef="editar">
+      <th mat-header-cell *matHeaderCellDef ></th>
+      <td mat-cell *matCellDef="let row">
+        <button mat-mini-fab color="primary" title="Editar excepción" (click)="editarRegistro(row)" data-toggle="modal" data-target="#exampleModal" data-backdrop="false" style="padding-top: 0px;
+        padding-bottom: 0px;float: left;"> <i class="material-icons" id="icono">edit</i></button>
+      </td>
+    </ng-container>
+  
+    <!-- Eliminar Column -->
+    <ng-container matColumnDef="eliminar">
+      <th mat-header-cell *matHeaderCellDef ></th>        
+      <td mat-cell *matCellDef="let row">
+        <button mat-mini-fab title="Eliminar excepción" id="eliminar" (click)="eliminarRegistro(row)" data-toggle="modal" data-target="#exampleModalE" data-backdrop="false" style="padding-top: 0px;
+        padding-bottom: 0px;float: left;"><i class="material-icons" id="icono">delete</i> </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>    
+  </table>
+
+  <mat-paginator #paginator
+      [length]="dataSource?.data.length"
+      [pageIndex]="0"
+      [pageSize]="5"
+      [pageSizeOptions]="[]">
+  </mat-paginator>
+</div>
+
+<!-- Modal Insertar -->
+<div class="modal fade" id="exampleModalS" aria-labelledby="exampleModalLabel" style="background-color:  rgba(7, 65, 7, 0.5)">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="tipoProducto" >
+    <div class="modal-content" >
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{headerModal}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+          <div class="col-3"></div>
+          <div class="col-6">
+            <br>
+            <form class="example-form">
+              <!--Input detalle-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Detalle de la excepción</mat-label>
+                <input matInput [formControl]="detalleTipoProductoControl"
+                        [errorStateMatcher]="matcher" type="text" matInput placeholder="Detalle de la excepción" value="{{detalleTipoProducto}}" #detalleTipoProductoI required id="detalleTipoProductoI">
+                <mat-icon matSuffix title="Texto">text_format</mat-icon>
+                <mat-error *ngIf="detalleTipoProductoControl.hasError('required')">
+                  Detalle excepción es <strong>requerido</strong>
+                </mat-error>
+              </mat-form-field>
+              <br>   
+              <!--Input tipo de cuenta-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Tipo producto</mat-label>
+                <mat-select  [(value)]="selectedTipoProducto" placeholder="Seleccione tipo producto" [formControl]="codigoTipoProductoControl"
+                [errorStateMatcher]="matcher" required>
+                  <mat-option *ngFor="let tipoProducto of tipoProductosA" [value]="tipoProducto.nombre">
+                    <span>{{ tipoProducto.id.tipoProducto }} - {{ tipoProducto.nombre }}</span>
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="codigoTipoProductoControl.hasError('required')">
+                  Tipo cuenta es <strong>requerido</strong>
+                </mat-error>              
+              </mat-form-field>
+              <br>
+              <!--Input Autoriza-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Quien autoriza excepción</mat-label>
+                <input matInput [formControl]="autorizaControl"
+                        [errorStateMatcher]="matcher" type="text" matInput placeholder="Quien autoriza excepción" value="{{usrautoriza}}" #usrautorizaI required id="usrautorizaI">
+                <mat-icon matSuffix title="Texto">text_format</mat-icon>
+                <mat-error *ngIf="autorizaControl.hasError('required')">
+                  Quien autoriza excepción <strong>requerido</strong>
+                </mat-error>
+              </mat-form-field>
+              <br>
+              <!--Input estado-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Estado</mat-label> 
+                <mat-select  [(value)]="estadoTipoProductoSelected" placeholder="Seleccione estado" [formControl]="estadoTipoProductoControl"
+                [errorStateMatcher]="matcher" required>
+                    <mat-option [value]="1">ACTIVO</mat-option>
+                    <mat-option [value]="2">INACTIVO</mat-option>                  
+                </mat-select> 
+                <mat-error *ngIf="estadoTipoProductoControl.hasError('required')">
+                  Estado es <strong>requerido</strong>
+                </mat-error>
+              </mat-form-field>    
+              <br>
+              <!--Botón guardar--> 
+              <span *ngIf="detalleTipoProductoControl.hasError('required') || codigoTipoProductoControl.hasError('required') || estadoTipoProductoControl.hasError('required') || autorizaControl.hasError('required')">
+                  <button mat-raised-button title="Complete los campos para guardar excepción" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white" disabled><i class="material-icons" id="icono">save</i>&nbsp;Guardar</button>
+              </span>   
+              <span *ngIf="!detalleTipoProductoControl.hasError('required') && !codigoTipoProductoControl.hasError('required') && !estadoTipoProductoControl.hasError('required') && !autorizaControl.hasError('required')">
+                  <button mat-raised-button title="Guardar excepción" id="agregar" (click)="operacionRegistro(3, null, detalleTipoProductoI.value, usrautorizaI.value)" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white"><i class="material-icons" id="icono">save</i>&nbsp;Guardar</button>
+              </span>           
+              <br><br><br>
+            </form>                  
+          </div>
+          <div class="col-3"></div>
+        </div>
+      </div>   
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar -->
+<div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" style="background-color:  rgba(9, 13, 48, 0.5)">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="tipoProducto" >
+    <div class="modal-content" >
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{headerModal}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+          <div class="col-3"></div>
+          <div class="col-6">
+            <br>
+            <form class="example-form">
+              <!--Input id excepción tipo producto-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Tipo producto</mat-label>
+                <input matInput placeholder="Id excepción" value="{{idTipoProducto}}" readonly="readonly" #idTipoProductoA id="idTipoProductoA" disabled> 
+              </mat-form-field>    
+              <br>
+              <!--Input detalle-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Detalle excepción</mat-label>
+                <input matInput [formControl]="detalleTipoProductoControlEditar"
+                        [errorStateMatcher]="matcher" type="text" matInput placeholder="Detalle de la excepción" value="{{detalleTipoProducto}}" #detalleTipoProductoA required id="detalleTipoProductoA">
+                <mat-icon matSuffix title="Texto">text_format</mat-icon>
+                <mat-error *ngIf="detalleTipoProductoControlEditar.hasError('required')">
+                  Detalle excepción es <strong>requerido</strong>
+                </mat-error>
+              </mat-form-field>
+              <br>   
+              <!--Input tipo de cuenta-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Tipo producto</mat-label>
+                <mat-select  [(value)]="selectedTipoProducto" placeholder="Seleccione tipo producto" [formControl]="codigoTipoProductoControlEditar"
+                [errorStateMatcher]="matcher" required>
+                  <mat-option *ngFor="let tipoProducto of tipoProductosA" [value]="tipoProducto.nombre">
+                    {{ tipoProducto.id.tipoProducto }} - {{ tipoProducto.nombre }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="codigoTipoProductoControlEditar.hasError('required')">
+                  Tipo cuenta es <strong>requerido</strong>
+                </mat-error>              
+              </mat-form-field>
+              <br>
+              <!--Input Autoriza-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Quien autoriza excepción</mat-label>
+                <input matInput
+                        [errorStateMatcher]="matcher" type="text" matInput placeholder="Quien autoriza excepción" disabled readonly value="{{usrautoriza}}" #usrautorizaA id="usrautorizaA">
+                <mat-icon matSuffix title="Texto">text_format</mat-icon>
+              </mat-form-field>
+              <br>
+              <!--Input estado-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Estado</mat-label> 
+                <mat-select  [(value)]="estadoTipoProductoSelected" placeholder="Seleccione estado" [formControl]="estadoTipoProductoControlEditar"
+                [errorStateMatcher]="matcher" required>
+                    <mat-option [value]="1">ACTIVO</mat-option>
+                    <mat-option [value]="2">INACTIVO</mat-option>                  
+                </mat-select> 
+                <mat-error *ngIf="estadoTipoProductoControlEditar.hasError('required')">
+                  Estado es <strong>requerido</strong>
+                </mat-error>
+              </mat-form-field>    
+              <br>  
+              <!--Botón actualizar-->  
+              <span *ngIf="detalleTipoProductoControlEditar.hasError('required') || codigoTipoProductoControlEditar.hasError('required') || estadoTipoProductoControlEditar.hasError('required')">
+                  <button mat-raised-button title="Complete los campos para guardar excepción" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white" disabled><i class="material-icons" id="icono">save</i>&nbsp;Actualizar</button>
+              </span>   
+              <span *ngIf="!detalleTipoProductoControlEditar.hasError('required') && !codigoTipoProductoControlEditar.hasError('required') && !estadoTipoProductoControlEditar.hasError('required')">
+                  <button mat-raised-button title="Guardar excepción" color="primary" (click)="operacionRegistro(1, idTipoProductoA.value, detalleTipoProductoA.value, usrautorizaA.value)" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white"><i class="material-icons" id="icono">save</i>&nbsp;Actualizar</button>
+              </span>           
+              <br><br><br>
+            </form>                  
+          </div>
+          <div class="col-3"></div>
+        </div>
+      </div>   
+    </div>
+  </div>
+</div>
+
+<!-- Modal Eliminar -->
+<div class="modal fade" id="exampleModalE" aria-labelledby="exampleModalLabel" style="background-color:  rgba(48, 9, 9, 0.5)">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="tipoProducto">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{headerModal}} </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+              <div class="col-1"></div>
+              <div class="col-10">
+              <br>
+              ¿Desea eliminar la excepción {{idTipoProducto}}?
+              <br><br>
+          <button mat-raised-button id="eliminar" title="Eliminar excepción" (click)="operacionRegistro(2, null, detalleTipoProductoD,'')" data-dismiss="modal" style="padding-top: 0px;
+          padding-bottom: 0px;float: left; color: white;"><i class="material-icons" id="icono">delete</i> Eliminar </button>        
+          <br> <br> <br>      
+        </div>
+        <div class="col-1"></div>
+        </div>
+      </div>    
+    </div>
+  </div>
+</div>

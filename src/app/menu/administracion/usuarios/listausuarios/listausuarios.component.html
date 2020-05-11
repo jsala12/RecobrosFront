@@ -1,0 +1,286 @@
+<div class="mat-elevation-z8">  
+  <br>
+  <div class="container-fluid">
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <div>            
+            Existen <span class="badge badge-pill badge-info">{{dataSource?.data.length}}</span> usuarios registrados.
+            <br>
+          </div>
+        </div>
+        <div class="col-6">
+          <button mat-mini-fab id="agregar" title="Registrar un usuario" data-toggle="modal" data-target="#exampleModalS" style="padding-top: 0px; float: center;
+          padding-bottom: 0px;" data-backdrop="false" (click)="agregarRegistro()">
+            <i class="material-icons" id="icono">
+              add
+            </i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div> 
+  <br>
+  <table mat-table class="full-width-table" matSort aria-label="Elements">
+    <!-- Login Column -->
+    <ng-container matColumnDef="login">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 130px;">Login</th>
+      <td mat-cell *matCellDef="let row">{{row.login}}</td>
+    </ng-container>
+
+    <!-- Nombre Rol Column -->
+    <ng-container matColumnDef="nombreRol">
+      <th mat-header-cell *matHeaderCellDef  style="width: 140px;">Nombre Rol</th>
+      <td mat-cell *matCellDef="let row">{{row.nombreRol}}</td>
+    </ng-container>
+
+    <!-- Email Column -->
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef style="width: 250px;">Email</th>
+      <td mat-cell *matCellDef="let row">{{row.email}}</td>
+    </ng-container>
+
+    <!-- Fecha Modificación Column -->
+    <ng-container matColumnDef="fechaModificacion">
+      <th mat-header-cell *matHeaderCellDef  style="width: 130px;" mat-sort-header>Fecha Modificación</th>
+      <td mat-cell *matCellDef="let row" title="Año-Mes-Día">{{row.fechaModificacion | date: 'yyyy-MM-dd'}}</td>
+    </ng-container>
+
+    <!-- Nombre Column -->
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef  style="width: 240px;">Nombre</th>
+      <td mat-cell *matCellDef="let row">{{row.nombre}}</td>
+    </ng-container>
+
+    <!-- Estado Column -->
+    <ng-container matColumnDef="estado">
+      <th mat-header-cell *matHeaderCellDef  style="width: 100px;">Estado</th>
+      <td mat-cell *matCellDef="let row">
+          <span class="badge badge-success" *ngIf="row.estado== 'Activo'">{{row.estado}}</span>
+          <span class="badge badge-danger" *ngIf="row.estado== 'Inactivo'">{{row.estado}}</span>
+      </td>
+    </ng-container>
+
+    <!-- Editar Column -->
+    <ng-container matColumnDef="editar">
+      <th mat-header-cell *matHeaderCellDef  ></th>
+      <td mat-cell *matCellDef="let row">
+        <button mat-mini-fab color="primary" title="Editar usuario {{row.nombreRol}}" (click)="editarRegistro(row)" data-toggle="modal" data-target="#exampleModal" data-backdrop="false" style="padding-top: 0px;
+        padding-bottom: 0px;float: left;"> <i class="material-icons" id="icono">edit</i></button>
+      </td>
+    </ng-container>
+  
+    <!-- Eliminar Column 
+    <ng-container matColumnDef="eliminar">
+      <th mat-header-cell *matHeaderCellDef ></th>        
+      <td mat-cell *matCellDef="let row">
+        <button mat-mini-fab title="Eliminar excepción" id="eliminar" (click)="eliminarRegistro(row)" data-toggle="modal" data-target="#exampleModalE" data-backdrop="false" style="padding-top: 0px;
+        padding-bottom: 0px;float: left;"><i class="material-icons" id="icono">delete</i> </button>
+      </td>
+    </ng-container>-->
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator #paginator
+      [length]="dataSource?.data.length"
+      [pageIndex]="0"
+      [pageSize]="6"
+      [pageSizeOptions]="[]">
+  </mat-paginator>
+</div>
+
+<!-- Modal Insertar -->
+<div class="modal fade" id="exampleModalS" aria-labelledby="exampleModalLabel" style="background-color:  rgba(7, 65, 7, 0.5)">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document" >
+    <div class="modal-content" >
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{headerModal}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+          <div class="col-3"></div>
+          <div class="col-6">
+            <br>
+            <form class="example-form">
+              <!--Input login-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Login</mat-label>
+                <input matInput placeholder="Login" [formControl]="loginControl"
+                        [errorStateMatcher]="matcher" type="text" value="{{login}}" id="loginI" #loginI required>
+                        <mat-icon matSuffix>person_pin</mat-icon>
+                <mat-error *ngIf="loginControl.hasError('required')">
+                  Login es <strong>requerido</strong>
+                </mat-error>
+              </mat-form-field>
+              <br>              
+              <!--Input nombre rol-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Nombre rol</mat-label>
+                <mat-select  [(value)]="nombreRolSelected" placeholder="Seleccione rol del usuario" [formControl]="nombreRolControl"
+                [errorStateMatcher]="matcher" required>
+                  <mat-option *ngFor="let rol of roles" [value]="rol.nombreRol">
+                    {{ rol.nombreRol}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="nombreRolControl.hasError('required')">
+                  Nombre rol es <strong>requerido</strong>
+                </mat-error>                
+              </mat-form-field>
+              <br>
+              <!--Input email-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Email</mat-label>
+                <input matInput [formControl]="emailUsuarioControl"
+                        [errorStateMatcher]="matcher" type="text" matInput placeholder="Login@bancodebogota.com.co" value="{{email}}" #emailI required id="emailI">
+                        <mat-icon matSuffix>email</mat-icon>
+                        <mat-error *ngIf="emailUsuarioControl.hasError('required') || emailUsuarioControl.hasError('email')">
+                  Email es <strong>requerido</strong> ó <strong>verifique</strong> la estructura
+                </mat-error>
+              </mat-form-field>
+              <br>
+              <!--Input nombre usuario-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Nombre completo usuario</mat-label>
+                <input matInput [formControl]="nombreUsuarioControl"
+                        [errorStateMatcher]="matcher" type="text" matInput placeholder="Nombre completo usuario" value="{{nombreUsuario}}" #nombreUsuarioI required id="nombreUsuarioI">
+                        <mat-icon matSuffix>drag_handle</mat-icon>
+                        <mat-error *ngIf="nombreUsuarioControl.hasError('required')">
+                    Nombre completo usuario es <strong>requerido</strong>
+                </mat-error>
+              </mat-form-field>
+              <br>
+              <!--Input estado-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Estado</mat-label> 
+                <mat-select  [(value)]="selectedEstado" placeholder="Seleccione estado" [formControl]="estadoUsuarioControl"
+                  [errorStateMatcher]="matcher" required>
+                  <mat-option *ngFor="let estadoUsuario of estadoUsuarios" [value]="estadoUsuario.nombre">
+                      {{ estadoUsuario.nombre}}
+                    </mat-option>                
+                  </mat-select> 
+                  <mat-error *ngIf="estadoUsuarioControl.hasError('required')">
+                    Estado es <strong>requerido</strong>
+                  </mat-error>
+                </mat-form-field>  
+              <br>  
+              <!--Botón guardar--> 
+              <span *ngIf="loginControl.hasError('required') || nombreRolControl.hasError('required') || emailUsuarioControl.hasError('required') || emailUsuarioControl.hasError('email') || nombreUsuarioControl.hasError('required') || estadoUsuarioControl.hasError('required')">
+                  <button mat-raised-button title="Complete los campos para guardar usuario" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white" disabled><i class="material-icons"id="icono">save</i>&nbsp;Guardar</button>
+              </span>   
+              <span *ngIf="!loginControl.hasError('required') && !nombreRolControl.hasError('required') && !emailUsuarioControl.hasError('required') && !emailUsuarioControl.hasError('email') && !nombreUsuarioControl.hasError('required') && !estadoUsuarioControl.hasError('required')">
+                  <button mat-raised-button title="Guardar usuario" id="agregar" (click)="operacionRegistro(3, loginI.value, emailI.value, nombreUsuarioI.value)" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white"><i class="material-icons"id="icono">save</i>&nbsp;Guardar</button>
+              </span>           
+              <br><br><br>
+            </form>                  
+          </div>
+          <div class="col-3"></div>
+        </div>
+      </div>   
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar -->
+<div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" style="background-color:  rgba(9, 13, 48, 0.5)">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{headerModal}} </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+            <div class="col-3"></div>
+            <div class="col-6">
+              <br>
+              <form class="example-form">
+                <!--Input login-->
+                <mat-form-field class="example-full-width" appearance="outline">
+                  <mat-label>Login</mat-label>
+                  <input matInput placeholder="Login" [formControl]="loginControlEditar"
+                          [errorStateMatcher]="matcher" type="text" value="{{login}}" id="loginA" #loginA required>
+                          <mat-icon matSuffix>person_pin</mat-icon>
+                  <mat-error *ngIf="loginControlEditar.hasError('required')">
+                    Login es <strong>requerido</strong>
+                  </mat-error>
+                </mat-form-field>
+                <br>              
+                <!--Input nombre rol-->
+                <mat-form-field class="example-full-width" appearance="outline">
+                  <mat-label>Nombre rol</mat-label>
+                  <mat-select  [(value)]="nombreRolSelected" placeholder="Seleccione rol del usuario" [formControl]="nombreRolControlEditar"
+                  [errorStateMatcher]="matcher" required>
+                    <mat-option *ngFor="let rol of roles" [value]="rol.nombreRol">
+                      {{ rol.nombreRol}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="nombreRolControlEditar.hasError('required')">
+                    Nombre rol es <strong>requerido</strong>
+                  </mat-error>                
+                </mat-form-field>
+                <br>
+                <!--Input email-->
+                <mat-form-field class="example-full-width" appearance="outline">
+                  <mat-label>Email</mat-label>
+                  <input matInput [formControl]="emailUsuarioControlEditar"
+                          [errorStateMatcher]="matcher" type="text" matInput placeholder="Login@bancodebogota.com.co" value="{{email}}" #emailA required id="emailA">
+                          <mat-icon matSuffix>email</mat-icon>
+                          <mat-error *ngIf="emailUsuarioControlEditar.hasError('required') || emailUsuarioControlEditar.hasError('email')">
+                    Email es <strong>requerido</strong> ó <strong>verifique</strong> la estructura
+                  </mat-error>
+                </mat-form-field>
+                <br>
+                <!--Input nombre usuario-->
+                <mat-form-field class="example-full-width" appearance="outline">
+                  <mat-label>Nombre completo usuario</mat-label>
+                  <input matInput [formControl]="nombreUsuarioControlEditar"
+                          [errorStateMatcher]="matcher" type="text" matInput placeholder="Nombre completo usuario" value="{{nombreUsuario}}" #nombreUsuarioA required id="nombreUsuarioA">
+                          <mat-icon matSuffix>drag_handle</mat-icon>
+                          <mat-error *ngIf="nombreUsuarioControlEditar.hasError('required')">
+                      Nombre completo usuario es <strong>requerido</strong>
+                  </mat-error>
+                </mat-form-field>
+                <br>
+                <!--Input estado-->
+                <mat-form-field class="example-full-width" appearance="outline">
+                    <mat-label>Estado</mat-label>
+                    <mat-select  [(value)]="selectedEstado" placeholder="Seleccione estado" [formControl]="estadoUsuarioControlEditar"
+                    [errorStateMatcher]="matcher" required>
+                    <mat-option *ngFor="let estadoUsuario of estadoUsuarios" [value]="estadoUsuario.nombre">
+                        {{ estadoUsuario.nombre}}
+                      </mat-option>                
+                    </mat-select> 
+                    <mat-error *ngIf="estadoUsuarioControlEditar.hasError('required')">
+                      Estado es <strong>requerido</strong>
+                    </mat-error>
+                  </mat-form-field>  
+                <br>
+                <!--Botón actualizar--> 
+                <span *ngIf="loginControlEditar.hasError('required') || nombreRolControlEditar.hasError('required') || emailUsuarioControlEditar.hasError('required') || emailUsuarioControlEditar.hasError('email') || nombreUsuarioControlEditar.hasError('required') || estadoUsuarioControlEditar.hasError('required')">
+                    <button mat-raised-button title="Complete los campos para actualizar usuario" data-dismiss="modal" style="padding-top: 0px;
+                    padding-bottom: 0px;float: left; color: white" disabled><i class="material-icons"id="icono">save</i>&nbsp;Actualizar</button>
+                </span>   
+                <span *ngIf="!loginControlEditar.hasError('required') && !nombreRolControlEditar.hasError('required') && !emailUsuarioControlEditar.hasError('required') && !emailUsuarioControlEditar.hasError('email') && !nombreUsuarioControlEditar.hasError('required') && !estadoUsuarioControlEditar.hasError('required')">
+                    <button mat-raised-button title="Actualizar usuario" color="primary" (click)="operacionRegistro(1, loginA.value, emailA.value, nombreUsuarioA.value)" data-dismiss="modal" style="padding-top: 0px;
+                    padding-bottom: 0px;float: left; color: white"><i class="material-icons"id="icono">save</i>&nbsp;Actualizar</button>
+                </span>           
+                <br><br><br>
+              </form>  
+            </div>
+          <div class="col-3"></div>
+        </div>
+      </div>      
+    </div>
+  </div>
+</div>
+  
+  

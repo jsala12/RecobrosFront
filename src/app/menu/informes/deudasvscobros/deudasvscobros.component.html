@@ -1,0 +1,22 @@
+<ngx-spinner
+size="medium"
+color="#fff"
+type="ball-fussion"
+>
+<br>    
+<img src="./assets/logo-bogota-blanco.png" alt="Logo del banco">
+</ngx-spinner>
+<ngx-alerts></ngx-alerts>
+<h5>
+Informes &nbsp;<mat-icon aria-hidden="false" aria-label="Example home icon" title="" style="vertical-align: bottom;">table_chart</mat-icon>
+<i class="material-icons" style="vertical-align: bottom;">navigate_next</i>
+<span title="Deudas cargadas mensualmente Vs cobros realizados mensualmente por transacción">DeudasVSCobros</span>&nbsp;<mat-icon aria-hidden="false" aria-label="Example home icon" title="" style="vertical-align: bottom;">assignment</mat-icon>
+</h5>
+<mat-tab-group class="mat-elevation-z8">
+    <mat-tab label="Deudas Creadas">
+        <app-listadeudas></app-listadeudas>
+    </mat-tab>
+    <mat-tab label="Cobros Exitosos">
+        <app-listacobros></app-listacobros>
+    </mat-tab>
+</mat-tab-group>

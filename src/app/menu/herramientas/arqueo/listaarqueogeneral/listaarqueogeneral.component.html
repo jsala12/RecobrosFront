@@ -1,0 +1,74 @@
+<div class="mat-elevation-z8">
+    <br>
+    <div class="container-fluid" style="padding: 0px;">
+        <div class="container">
+          <div class="row" style="margin-top: -20px; margin-bottom: -30px;">      
+              <div class="col-8">                  
+                <mat-form-field appearance="outline" style="width: 30%">
+                  <mat-label>Oficina o unidad</mat-label>
+                  <mat-select  [formControl]="toppingsOficinas" multiple 
+                  [errorStateMatcher]="matcher">
+                    <mat-option *ngFor="let oficina of oficinas" [value]="oficina.unidadNegocio">
+                        {{oficina.unidadNegocio}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <!--<mat-form-field appearance="outline" style="width: 30%">
+                    <mat-label>Año-Mes Fecha Rechazo </mat-label>
+                    <mat-select  [formControl]="toppingsOficinas" multiple 
+                    [errorStateMatcher]="matcher">
+                      <mat-option *ngFor="let oficina of oficinas" [value]="oficina.unidadNegocio">
+                          {oficina.unidadNegocio}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>&nbsp; &nbsp;-->
+              </div>
+              <div class="col-4" style="padding-top: 10px;">
+                  <button mat-raised-button color="primary" (click)="filtrarReporte()" title="Filtrar" style="float:left">
+                    <i class="material-icons">
+                        search
+                    </i>
+                  </button> &nbsp;&nbsp;
+                  &nbsp;&nbsp;<button mat-raised-button color="secundary" (click)="ExportTOExcel()" title="Exportar Hoja de Cálculo">Exportar <img src="./assets/icoExcel.png" alt="Hoja de cálculo" height="25"></button>
+              </div>
+          </div>
+        </div>
+      </div>
+    <br>
+    <table mat-table class="full-width-table" matSort aria-label="Elements">  
+      <!-- Unidad de Negocio Column -->
+    <ng-container matColumnDef="unidadNegocio">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="width:200px;" title="Código de oficina o Unidad de Negocio">Cod. Oficina</th>
+        <td mat-cell *matCellDef="let row">{{row.unidadNegocio}}</td>
+      </ng-container>
+  
+      <!-- Valor Deuda Column -->
+      <ng-container matColumnDef="valorDeuda">
+        <th mat-header-cell *matHeaderCellDef style="width:250px;">Valor Deuda</th>
+        <td mat-cell *matCellDef="let row">{{row.valorDeuda}}</td>
+      </ng-container>
+  
+        <!-- Pendiente Column -->
+      <ng-container matColumnDef="pendiente">
+        <th mat-header-cell *matHeaderCellDef style="width:250px;">Valor Pendiente</th>
+        <td mat-cell *matCellDef="let row">{{row.pendiente}}</td>
+      </ng-container>
+  
+        <!-- Exitoso Column -->
+      <ng-container matColumnDef="exitoso">
+        <th mat-header-cell *matHeaderCellDef style="width:250px;">Valor Cobros Exitoso</th>
+        <td mat-cell *matCellDef="let row">{{row.exitoso}}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  
+    <mat-paginator #paginator
+        [length]="dataSource?.data.length"
+        [pageIndex]="0"
+        [pageSize]="5"
+        [pageSizeOptions]="[]">
+    </mat-paginator>
+  </div>
+  

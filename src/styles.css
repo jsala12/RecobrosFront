@@ -1,0 +1,102 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import '~material-design-icons/iconfont/material-icons.css';
+@import '~bootstrap/dist/css/bootstrap.min.css'; 
+
+html {
+    min-height: 100%;
+    position: relative;
+}
+
+body{
+    margin: 0;
+}
+
+header {
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    background-color : #131381;
+    background-image: url('./assets/grafismo-bb.png');
+}
+
+#header {
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    background-color : #131381;
+    background-image: url('./assets/grafismo-bb.png');
+}
+
+#headerMenu{
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    background-color : #131381;
+    background-image: url('./assets/grafismo-bb.png');
+    color: white;
+}
+
+footer{
+	margin-top: 0px;
+	clear: both; /* esta propiedad de borrado fuerza a .container a conocer dónde terminan las columnas y a contenerlas */		
+	text-align: right;	
+	font-family: bodoni MT Poster;
+	height: auto; 
+	width: 100%;
+    position: absolute;
+	bottom: 0;
+    color: white;
+}
+
+h4{
+    color: white;
+}
+
+#home{
+    color: white;
+    padding-top: 5px;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+#homeDescripciones{
+    color: black;
+}
+
+#agregar{
+    background-color: rgba(60, 160, 100, 0.88);
+}
+
+#editar{
+    background-color: #213597;
+}
+
+#ver{
+    background-color: #5FBCE7;
+}
+
+#eliminar{
+    background-color: #C52C06;
+}
+
+#icono{
+    color: white;
+    height: 17px;
+    width: 30px;
+    font-size: 20px;
+}
+.example-full-width {
+    width: 100%;
+}
+
+.modal-header{
+    background-color:  rgba(202, 204, 202, 0.31);
+}
+
+mat-form-field.mat-form-field {
+    font-size: 14px;
+}
+
+

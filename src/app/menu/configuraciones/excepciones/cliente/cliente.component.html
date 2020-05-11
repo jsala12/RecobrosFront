@@ -1,0 +1,371 @@
+<div class="mat-elevation-z8">  
+  <br>
+  <div class="container-fluid">
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <div>            
+            <mat-form-field appearance="outline">
+              <mat-label>Seleccione un tipo de documento</mat-label>
+              <mat-select  [(value)]="selected" (selectionChange)="filtrarTabla()">
+                  <mat-option *ngFor="let tipoC of tipoClientes" [value]="tipoC.codigoTipoDocumento">
+                {{ tipoC.detalle }}
+              </mat-option>
+              </mat-select>
+            </mat-form-field>&nbsp;
+            Tiene <span class="badge badge-pill badge-info">{{dataSource?.data.length}}</span> excepciones configuradas.
+            <br>
+          </div>
+        </div>
+        <div class="col-6">
+          <button mat-mini-fab id="agregar" title="Agregar una excepción" data-toggle="modal" data-target="#exampleModalS" style="padding-top: 0px; float: center;
+            padding-bottom: 0px;" data-backdrop="false" (click)="agregarRegistro()">
+            <i class="material-icons" id="icono">
+              add
+            </i>
+          </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <!--<button mat-button	id="agregar" title="Agregar excepciones masivas" data-toggle="modal" data-target="#exampleModalCargaMasiva" style="padding-top: 0px; float: center;
+            padding-bottom: 0px;" data-backdrop="false" (click)="agregarRegistroMasivo()">
+            <i class="material-icons" id="icono">
+              add
+            </i>
+            <span style="color: white"><b>Excepciones masivas</b></span> 
+          </button>-->
+        </div>
+      </div>
+    </div>
+  </div> 
+  <table mat-table class="full-width-table" matSort aria-label="Elements">
+    <!-- Documento Column -->
+    <ng-container matColumnDef="documento">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 140px;">Documento</th>
+      <td mat-cell *matCellDef="let row">{{row.documento}}</td>
+    </ng-container>
+
+    <!-- Tipo Column -->
+    <ng-container matColumnDef="tipo">
+      <th mat-header-cell *matHeaderCellDef  style="width: 150px;">Tipo</th>
+      <td mat-cell *matCellDef="let row">{{row.tipo}}</td>
+    </ng-container>
+
+    <!-- Detalle Column -->
+    <ng-container matColumnDef="detalle">
+        <th mat-header-cell *matHeaderCellDef  style="width: 240px;">Detalle</th>
+        <td mat-cell *matCellDef="let row">{{row.detalle}}</td>
+      </ng-container>   
+
+    <!-- Fecha Creación Column -->
+    <ng-container matColumnDef="fechaCreacion">
+      <th mat-header-cell *matHeaderCellDef>Fecha Creación</th>
+      <td mat-cell *matCellDef="let row" style="width: 140px;">
+          <span *ngIf="row.fechaCreacion== null">No hay datos</span>
+          <span *ngIf="!row.fechaCreacion== ''" title="Año-Mes-Día">{{row.fechaCreacion | date: 'yyyy-MM-dd'}}</span>
+      </td>
+    </ng-container>
+
+    <!-- Usrautoriza Column -->
+    <ng-container matColumnDef="usrautoriza">
+      <th mat-header-cell *matHeaderCellDef>Autorizó</th>
+      <td mat-cell *matCellDef="let row" style="width: 160px;">
+          <span *ngIf="row.usrautoriza== null">No hay datos</span>
+          <span *ngIf="!row.usrautoriza== ''">{{row.usrautoriza}}</span>
+      </td>
+    </ng-container>
+
+    <!-- Estado Column -->
+    <ng-container matColumnDef="estado">
+      <th mat-header-cell *matHeaderCellDef>Estado</th>
+      <td mat-cell *matCellDef="let row">
+          <span class="badge badge-success" *ngIf="row.estado== 'ACTIVO'">{{row.estado}}</span>
+          <span class="badge badge-danger" *ngIf="row.estado== 'INACTIVO'">{{row.estado}}</span>
+      </td>
+    </ng-container>
+
+    <!-- Editar Column -->
+    <ng-container matColumnDef="editar">
+      <th mat-header-cell *matHeaderCellDef ></th>
+      <td mat-cell *matCellDef="let row">
+        <button mat-mini-fab color="primary" title="Editar excepción" (click)="editarRegistro(row)" data-toggle="modal" data-target="#exampleModal" data-backdrop="false" style="padding-top: 0px;
+        padding-bottom: 0px;float: left;"> <i class="material-icons" id="icono">edit</i></button>
+      </td>
+    </ng-container>
+
+    <!-- Eliminar Column -->
+    <ng-container matColumnDef="eliminar">
+      <th mat-header-cell *matHeaderCellDef ></th>        
+      <td mat-cell *matCellDef="let row">
+        <button mat-mini-fab title="Eliminar excepción" id="eliminar" (click)="eliminarRegistro(row)" data-toggle="modal" data-target="#exampleModalE" data-backdrop="false" style="padding-top: 0px;
+        padding-bottom: 0px;float: left;"><i class="material-icons" id="icono">delete</i> </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator #paginator
+      [length]="dataSource?.data.length"
+      [pageIndex]="index"
+      [pageSize]="5"
+      [pageSizeOptions]="[]">
+  </mat-paginator>
+
+</div>
+
+<!-- Modal Insertar -->
+<div class="modal fade" id="exampleModalS" aria-labelledby="exampleModalLabel" style="background-color:  rgba(7, 65, 7, 0.5)">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document" >
+    <div class="modal-content" >
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{headerModal}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+          <div class="col-3"></div>
+          <div class="col-6">
+            <br>
+            <form class="example-form">
+              <!--Input número de documento-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Número documento</mat-label>
+                <input matInput placeholder="Número documento" [formControl]="numeroDocumentoControl" type="text" numbersOnly maxlength="10"
+                        [errorStateMatcher]="matcher" value="{{documentoCliente}}" id="numDocumento" #numDocumento required >
+                <mat-hint align="end">{{numDocumento.value?.length || 0}}/10</mat-hint>
+                <mat-error *ngIf="numeroDocumentoControl.hasError('required')">
+                  Número documento es <strong>requerido</strong>. Max 10 números.
+                </mat-error>
+              </mat-form-field>
+              <br>              
+              <!--Input tipo de documento-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Tipo documento</mat-label>
+                <mat-select  [(value)]="selectedTipoDocumento" placeholder="Seleccione tipo documento" [formControl]="tipoDocumentoControl"
+                [errorStateMatcher]="matcher" required>
+                  <mat-option *ngFor="let tipoCA of tipoClientes" [value]="tipoCA.codigoTipoDocumento">
+                    {{ tipoCA.detalle }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="tipoDocumentoControl.hasError('required')">
+                  Tipo documento es <strong>requerido</strong>
+                </mat-error>                
+              </mat-form-field>
+              <br>
+              <!--Input detalle-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Detalle</mat-label>
+                <input matInput [formControl]="detalleClienteControl"
+                        [errorStateMatcher]="matcher" type="text" matInput placeholder="Detalle de la excepción" value="{{detalleCliente}}" #detalleClienteI required id="detalleClienteI">
+                <mat-icon matSuffix title="Texto">text_format</mat-icon>
+                <mat-error *ngIf="detalleClienteControl.hasError('required')">
+                  Detalle excepción es <strong>requerido</strong>
+                </mat-error>
+              </mat-form-field>
+              <br>
+              <!--Input Autoriza-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Quien autoriza excepción</mat-label>
+                <input matInput [formControl]="autorizaControl"
+                        [errorStateMatcher]="matcher" type="text" matInput placeholder="Quien autoriza excepción" value="{{usrautoriza}}" #usrautorizaI required id="usrautorizaI">
+                <mat-icon matSuffix title="Texto">text_format</mat-icon>
+                <mat-error *ngIf="autorizaControl.hasError('required')">
+                  Quien autoriza excepción <strong>requerido</strong>
+                </mat-error>
+              </mat-form-field>
+              <br>
+              <!--Input estado-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Estado</mat-label> 
+                <mat-select  [(value)]="estadoClienteSelected" placeholder="Seleccione estado" [formControl]="estadoClienteControl"
+                [errorStateMatcher]="matcher" required>
+                    <mat-option [value]="1">ACTIVO</mat-option>
+                    <mat-option [value]="2">INACTIVO</mat-option>                  
+                </mat-select> 
+                <mat-error *ngIf="estadoClienteControl.hasError('required')">
+                  Estado es <strong>requerido</strong>
+                </mat-error>
+              </mat-form-field>
+              <br><br>  
+              <!--Botón guardar--> 
+              <span *ngIf="numeroDocumentoControl.hasError('required') || tipoDocumentoControl.hasError('required') || detalleClienteControl.hasError('required') || estadoClienteControl.hasError('required') || autorizaControl.hasError('required')">
+                  <button mat-raised-button title="Complete los campos para guardar excepción" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white" disabled><i class="material-icons"id="icono">save</i>&nbsp;Guardar</button>
+              </span>   
+              <span *ngIf="!numeroDocumentoControl.hasError('required') && !tipoDocumentoControl.hasError('required') && !detalleClienteControl.hasError('required') && !estadoClienteControl.hasError('required') && !autorizaControl.hasError('required')">
+                  <button mat-raised-button title="Guardar excepción" id="agregar" (click)="operacionRegistro(3, numDocumento.value, detalleClienteI.value, usrautorizaI.value)" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white"><i class="material-icons"id="icono">save</i>&nbsp;Guardar</button>
+              </span>           
+              <br><br><br>
+            </form>                  
+          </div>
+          <div class="col-3"></div>
+        </div>
+      </div>   
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar -->
+<div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" style="background-color:  rgba(9, 13, 48, 0.5)">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{headerModal}} </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+            <div class="col-3"></div>
+            <div class="col-6">
+              <br>
+              <!--Input número de documento-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Número documento</mat-label>
+                <input matInput placeholder="Número documento" value="{{documentoCliente}}" readonly="readonly" #numeroDocumentoA disabled> 
+              </mat-form-field>
+              <br>
+              <!--Input tipo de documento-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Tipo documento</mat-label>
+                <mat-select  [(value)]="selectedTipoDocumento" readonly disabled placeholder="Seleccione tipo documento" [formControl]="tipoDocumentoControlEditar"
+                [errorStateMatcher]="matcher" required>
+                  <mat-option *ngFor="let tipoCA of tipoClientes" [value]="tipoCA.codigoTipoDocumento">
+                    {{ tipoCA.detalle }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="tipoDocumentoControlEditar.hasError('required')">
+                  Tipo documento es <strong>requerido</strong>
+                </mat-error>
+              </mat-form-field>
+              <br>
+              <!--Input detalle-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Detalle</mat-label>
+                <input matInput [formControl]="detalleClienteControlEditar"
+                        [errorStateMatcher]="matcher" type="text" placeholder="Detalle excepción" value="{{detalleCliente}}" #detalleClienteA required id="detalleClienteA">
+                <mat-icon matSuffix title="Texto">text_format</mat-icon>
+                <mat-error *ngIf="detalleClienteControlEditar.hasError('required')">
+                  Detalle excepción es <strong>requerido</strong>
+                </mat-error>
+              </mat-form-field>
+              <br>
+              <!--Input Autoriza-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Quien autoriza excepción</mat-label>
+                <input matInput
+                        [errorStateMatcher]="matcher" type="text" matInput placeholder="Quien autoriza excepción" disabled readonly value="{{usrautoriza}}" #usrautorizaA id="usrautorizaA">
+                <mat-icon matSuffix title="Texto">text_format</mat-icon>
+              </mat-form-field>
+              <br>
+              <!--Input estado-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Estado</mat-label>
+                <mat-select  [(value)]="estadoClienteSelected" placeholder="Seleccione estado" [formControl]="estadoClienteControlEditar"
+                [errorStateMatcher]="matcher" required>
+                    <mat-option [value]="1">ACTIVO</mat-option>
+                    <mat-option [value]="2">INACTIVO</mat-option>                  
+                </mat-select> 
+                <mat-error *ngIf="estadoClienteControlEditar.hasError('required')">
+                  Estado es <strong>requerido</strong>
+                </mat-error>
+              </mat-form-field>
+              <br><br>
+              <!--Botón actualizar-->    
+              <span *ngIf="tipoDocumentoControlEditar.hasError('required') || detalleClienteControlEditar.hasError('required') || estadoClienteControlEditar.hasError('required')">
+                  <button mat-raised-button title="Complete los campos para actualizar excepción" color="primary" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white" disabled><i class="material-icons" id="icono">save</i>&nbsp;Actualizar</button>
+              </span>   
+              <span *ngIf="!tipoDocumentoControlEditar.hasError('required') && !detalleClienteControlEditar.hasError('required') && !estadoClienteControlEditar.hasError('required')">
+                  <button mat-raised-button title="Actualizar excepción" color="primary" (click)="operacionRegistro(1, numeroDocumentoA.value, detalleClienteA.value, usrautorizaA.value)" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white"><i class="material-icons"id="icono">save</i>&nbsp;Actualizar</button>
+              </span>
+              <br><br><br>      
+            </div>
+          <div class="col-3"></div>
+        </div>
+      </div>      
+    </div>
+  </div>
+</div>
+
+<!-- Modal Eliminar -->
+<div class="modal fade" id="exampleModalE" aria-labelledby="exampleModalLabel" style="background-color:  rgba(48, 9, 9, 0.5)">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{headerModal}} </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+              <div class="col-1"></div>
+              <div class="col-10">
+              <br>
+              ¿Desea eliminar la excepción del cliente con documento {{documentoCliente}}?
+              <br><br>
+          <button mat-raised-button id="eliminar" title="Eliminar excepción" (click)="operacionRegistro(2, numDocumentoD, detalleClienteD, '')" data-dismiss="modal" style="padding-top: 0px;
+          padding-bottom: 0px;float: left; color: white;"><i class="material-icons" id="icono">delete</i> Eliminar </button>        
+          <br> <br> <br>      
+        </div>
+        <div class="col-1"></div>
+        </div>
+      </div>    
+    </div>
+  </div>
+</div>
+
+<!-- Modal Carga masiva de excepciones-->
+<div class="modal fade" id="exampleModalCargaMasiva" aria-labelledby="exampleModalLabel" style="background-color:  rgba(7, 65, 7, 0.5)">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{headerModal}} </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+              <div class="col-1"></div>
+              <div class="col-10">
+              <br>
+              <b>Debe carrgar un archivo de excel (.xlsx)</b><br>
+              Con las columnas: <br>
+              - Número documento <br>
+              - Tipo documento <br>
+              - Detalle <br>
+              - Autorizo <br>
+              - Estado (1: Activo, 2: Inactivo)
+              <br><br>
+              
+              <mat-file-upload
+                [labelText]="'Seleccione el archivo con las excepciones a cargar:'"
+                [selectButtonText]="'Seleccione archivo'"
+                [uploadButtonText]="'Cargar excepciones masivas'"
+                [allowMultipleFiles]="false"
+                [showUploadButton]="false"
+                [acceptedTypes]="'.xlsx, .csv'"
+                (uploadClicked)="onUploadClicked($event)"
+                (selectedFilesChanged)="onSelectedFilesChanged($event)">
+              </mat-file-upload>  
+          <!--Botón guardar-->              
+          <!--<span>
+              <button mat-raised-button title="Guardar excepciones masivas" id="agregar" (click)="cargarExcepciones()" data-dismiss="modal" style="padding-top: 0px;
+              padding-bottom: 0px;float: left; color: white"><i class="material-icons"id="icono">save</i>&nbsp;Guardar excepciones masivas</button>
+          </span> -->    
+          <!--<button type="button" mat-raised-button (click)="fileInput.click()">Choose File</button>
+          <input hidden (change)="onFileSelected()" #fileInput type="file" id="file">     -->
+          <br><br><br>      
+        </div>
+        <div class="col-1"></div>
+        </div>
+      </div>    
+    </div>
+  </div>
+</div>

@@ -1,0 +1,174 @@
+<div class="mat-elevation-z8">
+  <br>
+  <div class="container">
+    <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+      <div class="col-10">
+        <mat-form-field appearance="outline" style="font-size: 12px; width: 123px;">
+          <mat-label>Fecha inicial</mat-label>
+          <input matInput [matDatepicker]="pickerInicio" id="pickerInicio" placeholder="Fecha Inicial">
+          <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+          <mat-datepicker #pickerInicio></mat-datepicker>
+        </mat-form-field>&nbsp;
+        <mat-form-field appearance="outline" style="font-size: 12px; width: 123px;">
+          <mat-label>Fecha final</mat-label>
+          <input matInput [matDatepicker]="pickerFin" id="pickerFin" placeholder="Fecha Final">
+          <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+          <mat-datepicker #pickerFin></mat-datepicker>
+        </mat-form-field>&nbsp; 
+        <mat-form-field appearance="outline" style="font-size: 12px; width: 123px;">
+          <mat-label>Número cuenta</mat-label>
+          <input matInput placeholder="Número Cuenta"  id="numCuenta" #numCuenta>
+          <mat-icon matSuffix>looks_one</mat-icon>
+        </mat-form-field>&nbsp;
+        <mat-form-field appearance="outline" style="font-size: 12px; width: 123px;">
+          <mat-label>Número documento</mat-label>
+          <input matInput placeholder="Número Documento"  id="numDocumento" #numDocumento>
+          <mat-icon matSuffix>looks_one</mat-icon>
+        </mat-form-field>&nbsp;&nbsp;
+        <mat-form-field appearance="outline" style="font-size: 12px; width: 123px;">
+          <mat-label>Código oficina</mat-label>
+          <input matInput placeholder="Código Oficina/CEO Receptor" id="oficina" #oficina>
+          <mat-icon matSuffix>business</mat-icon>
+        </mat-form-field>&nbsp;  
+        <mat-form-field appearance="outline" style="font-size: 12px; width: 123px;">
+          <mat-label>Código transacción</mat-label>
+          <input matInput placeholder="Código Transacción" id="codTransaccion" #codTransaccion>
+          <mat-icon matSuffix>looks_one</mat-icon>
+        </mat-form-field>&nbsp;   
+        <button mat-raised-button color="primary" (click)="filtrarReporte()" title="Filtrar informe...">
+          <i class="material-icons">
+              search
+          </i>
+        </button> 
+      </div>                
+      <div class="col-2" style="padding-top: 10px;">
+          &nbsp;&nbsp;<button mat-raised-button color="secundary" (click)="ExportTOExcel()" title="Exportar Hoja de Cálculo">Exportar <img src="./assets/icoExcel.png" alt="Hoja de cálculo" height="25"></button>
+      </div>
+    </div>
+  </div>  
+  <br>
+  <div class="example-container">
+      <table mat-table class="full-width-table" matSort aria-label="Elements">
+        <!-- Código Transacción Column -->
+        <ng-container matColumnDef="codigoTransaccion">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="width:200px; text-align: left"
+            title="Código Transacción">Cód. Transacción</th>
+          <td mat-cell *matCellDef="let row" style="width:200px; text-align: left; font-size: 12px">
+            {{row.codigoTransaccion}}</td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+    
+        <!-- Fecha Rechazo Column -->
+        <ng-container matColumnDef="fechaRechazo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="width:200px; text-align: left" title="Fecha Rechazo">
+            Fecha Rechazo</th>
+          <td mat-cell *matCellDef="let row" title="Año-Mes-Día" style="width:200px; text-align: left; font-size: 12px">
+            {{row.fechaRechazo | date: 'yyyy-MM-dd'}}</td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+    
+        <!-- Fecha Deuda Column -->
+        <ng-container matColumnDef="fechaDeuda">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="width:200px; text-align: left" title="Fecha Deuda">
+            Fecha Deuda</th>
+          <td mat-cell *matCellDef="let row" title="Año-Mes-Día" style="width:200px; text-align: left; font-size: 12px">
+            {{row.fechaDeuda | date: 'yyyy-MM-dd'}}</td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+    
+        <!-- Tipo Cuenta Column -->
+        <ng-container matColumnDef="tipoCuenta">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="width:130px; text-align: left" title="Tipo Cuenta">
+            Tipo Cuenta</th>
+          <td mat-cell *matCellDef="let row" style="width:130px; text-align: left; font-size: 12px">{{row.tipoCuenta}}</td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+    
+        <!-- Número Cuenta Rechazo Column -->
+        <ng-container matColumnDef="numeroCuentaRechazo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="width:250px; text-align: left">Cuenta Rechazo</th>
+          <td mat-cell *matCellDef="let row" style="width:250px; text-align: left; font-size: 12px">
+            {{row.numeroCuentaRechazo}}</td>
+          <td mat-footer-cell *matFooterCellDef title="Número de filas">Núemero Filas: </td>
+        </ng-container>
+    
+        <!-- Código Oficina/ CEO Receptor Column -->
+        <ng-container matColumnDef="codigoOficinaOCeo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="width:200px; text-align: left"
+            title="Código Oficina/ CEO Receptor">Cód. Oficina</th>
+          <td mat-cell *matCellDef="let row" style="width:200px; text-align: left; font-size: 12px">
+            {{row.codigoOficinaOCeo}}</td>
+          <td mat-footer-cell *matFooterCellDef title="Total de excepcionados según filtro aplicado.">{{numeroFilas}}</td>
+        </ng-container>
+    
+        <!-- Valor Deuda Column -->
+        <ng-container matColumnDef="valorDeuda">
+          <th mat-header-cell *matHeaderCellDef style="width:200px; text-align: left">Valor Deuda</th>
+          <td mat-cell *matCellDef="let row" style="width:200px; text-align: left; font-size: 12px">{{row.valorDeuda}}</td>
+          <td mat-footer-cell *matFooterCellDef>Total Pendiente:</td>
+        </ng-container>
+    
+        <!-- Valor Pendiente Column -->
+        <ng-container matColumnDef="valorPendiente">
+          <th mat-header-cell *matHeaderCellDef style="width:220px; text-align: left">Valor Pendiente</th>
+          <td mat-cell *matCellDef="let row" style="width:220px; text-align: left; font-size: 12px">{{row.valorPendiente}}
+          </td>
+          <td mat-footer-cell *matFooterCellDef
+            title="Valor total de los {{numeroFilas}} excepcionados según filtro aplicado.">{{total}}</td>
+        </ng-container>
+    
+        <!-- Tipo Identificación Column -->
+        <ng-container matColumnDef="tipoIdentificacion">
+          <th mat-header-cell *matHeaderCellDef style="width:160px; text-align: left" title="Tipo Identificación">Tipo Id.
+          </th>
+          <td mat-cell *matCellDef="let row" style="width:160px; text-align: left; font-size: 12px">
+            {{row.tipoIdentificacion}}</td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+    
+        <!-- Número Documento Column -->
+        <ng-container matColumnDef="numeroDocumento">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="width:250px; text-align: left"
+            title="Número Documento">Núm. Documento</th>
+          <td mat-cell *matCellDef="let row" style="width:250px; text-align: left; font-size: 12px">{{row.numeroDocumento}}
+          </td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+    
+        <!-- Nombre Cliente  Column -->
+        <ng-container matColumnDef="nombreCliente">
+          <th mat-header-cell *matHeaderCellDef style="width:900px; text-align: left"> <span style="text-align: left">Nombre
+              Cliente</span></th>
+          <td mat-cell *matCellDef="let row" style="width:900px; text-align: left; font-size: 12px">{{row.nombreCliente}}
+          </td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+    
+        <!-- Detalle Excepción Column -->
+        <ng-container matColumnDef="detalleExcepcion">
+          <th mat-header-cell *matHeaderCellDef title="Detalle Excepción">Detalle</th>
+          <td mat-cell *matCellDef="let row" style="width:220px; text-align: left; font-size: 12px">{{row.detalleExcepcion}}
+          </td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>     
+
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-footer-row *matFooterRowDef="displayedColumns;"></tr>
+    </table>
+  </div>
+  <mat-paginator #paginator
+      [length]="dataSource?.data.length"
+      [pageIndex]="0"
+      [pageSize]="4"
+      [pageSizeOptions]="[]">
+  </mat-paginator>
+  <span *ngIf="dataSource?.data.length!=0">
+    Existen <b>{{numeroFilas}}</b> filas. Use las flechas para ver la siguiente página.
+  </span>
+  <span *ngIf="dataSource?.data.length==0">
+      <b>Use los filtros para obtener la información deseada.</b>
+  </span> 
+</div>
+  

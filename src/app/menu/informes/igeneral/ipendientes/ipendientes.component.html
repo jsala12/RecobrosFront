@@ -1,0 +1,124 @@
+<br>
+<div class="container-fluid" style="padding: 0px;">
+  <div class="container">
+    <div class="row">
+      <div class="col-6">
+        <div class="mat-elevation-z8">
+          <br>
+          <div class="container">
+            <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+              <div class="col-12">
+                <mat-form-field appearance="outline" style="font-size: 10px; width: 100px;">
+                  <mat-label>Fecha inicial</mat-label>
+                  <input matInput  [min]="minDate" [max]="maxDate" [matDatepicker]="pickerInicio" id="pickerInicio" placeholder="Fecha Inicial">
+                  <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerInicio></mat-datepicker>
+                </mat-form-field>&nbsp;
+                <mat-form-field appearance="outline" style="font-size: 10px; width: 100px;">
+                  <mat-label>Fecha final</mat-label>
+                  <input matInput  [min]="minDate" [max]="maxDate"  [matDatepicker]="pickerFin" id="pickerFin" placeholder="Fecha Final">
+                  <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerFin></mat-datepicker>
+                </mat-form-field>&nbsp; 
+                <mat-form-field appearance="outline" style="font-size: 10px; width: 100px;">
+                  <mat-label>Código transacción</mat-label>          
+                  <input matInput placeholder="Código Transacción" id="codTransaccion" #codTransaccion>
+                  <mat-icon matSuffix>looks_one</mat-icon>
+                </mat-form-field>&nbsp; 
+                <button mat-raised-button color="primary" (click)="filtrarReporte()" title="Filtrar informe...">
+                  <i class="material-icons">
+                      search
+                  </i>
+                </button>&nbsp; 
+                <button mat-raised-button color="secundary" (click)="ExportTOExcel()" title="Exportar Hoja de Cálculo">
+                  <img src="./assets/icoExcel.png" alt="Hoja de cálculo" height="25">
+                </button>
+              </div>                
+            </div>
+          </div>  
+          <br>
+          <table mat-table class="full-width-table" matSort aria-label="Elements">
+            <!-- Código Transacción Column -->
+            <ng-container matColumnDef="codigoTransaccion">
+              <th mat-header-cell *matHeaderCellDef style="width:150px; text-align: left" title="Código Transacción" mat-sort-header>C. Tx.</th>
+              <td mat-cell *matCellDef="let row">{{row.codigoTransaccion}}</td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <!-- Nombre Transacción Column -->
+            <ng-container matColumnDef="nombreTransaccion">
+              <th mat-header-cell *matHeaderCellDef style="width:420px; text-align: left" title="Nombre Transacción" mat-sort-header>N. Transacción</th>
+              <td mat-cell *matCellDef="let row">{{row.nombreTransaccion}}</td>
+              <td mat-footer-cell *matFooterCellDef><b>Totales:</b></td>
+            </ng-container>
+
+            <!-- Cantidad Column -->
+            <ng-container matColumnDef="cantidad">
+              <th mat-header-cell *matHeaderCellDef style="width:220px; text-align: left">Cantidad</th>
+              <td mat-cell *matCellDef="let row">{{row.cantidad}}</td>
+              <td mat-footer-cell *matFooterCellDef><b title="Cantidad total de los registros cargados a Recobros">{{totalCantidad}}</b></td>
+            </ng-container>
+
+            <!-- Valor Column -->
+            <ng-container matColumnDef="valor">
+              <th mat-header-cell *matHeaderCellDef style="width:320px; text-align: left">Valor</th>
+              <td mat-cell *matCellDef="let row">{{row.valor}}</td>
+              <td mat-footer-cell *matFooterCellDef><b title="Valor total de los registros cargados a Recobros">{{totalValor}}</b></td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr mat-footer-row *matFooterRowDef="displayedColumns;"></tr>
+          </table>
+
+          <mat-paginator #paginator
+              [length]="dataSource?.data.length"
+              [pageIndex]="0"
+              [pageSize]="4">
+          </mat-paginator>
+          Existen <b>{{numeroFilas}}</b> filas para este reporte.
+        </div>
+        <br>
+      </div>
+      <div class="col-6">
+          <div class="mat-elevation-z8">
+            <br>
+            <h5 style="text-align: center; color: black">Valor de recobros pendientes por transacción<br>
+                <span *ngIf="!fechaFinal && !fechaInicial" style="font-size: 14px">
+                    desde su activación hasta hoy<br>
+                    <span *ngIf="dataSource?.data.length==0">
+                        Use los filtros para obtener la información. <br>
+                        <!--<img src="./assets/offline.png" alt="offline" width="150">-->
+                    </span>
+                </span>
+                <span *ngIf="fechaFinal && !fechaInicial" style="font-size: 14px">
+                    desde su activación hasta {{fechaFinal}}<br>
+                    <span *ngIf="dataSource?.data.length==0">
+                        No se pudo cargar la información correctamente, intente de nuevo usando los filtros. <br>
+                        <!--<img src="./assets/offline.png" alt="offline" width="150">-->
+                    </span>
+                </span>
+                <span *ngIf="!fechaFinal && fechaInicial" style="font-size: 14px">
+                    desde {{fechaInicial}} hasta hoy <br>
+                    <span *ngIf="dataSource?.data.length==0">
+                        No se pudo cargar la información correctamente, intente de nuevo usando los filtros. <br>
+                        <!--<img src="./assets/offline.png" alt="offline" width="150">-->
+                    </span>
+                </span>
+                <span *ngIf="fechaFinal && fechaInicial" style="font-size: 14px">desde {{fechaInicial}} hasta {{fechaFinal}}</span>
+            </h5>                    
+            <div style="display: block">
+                <canvas baseChart
+                    [data]="pieChartData"
+                    [labels]="pieChartLabels"
+                    [chartType]="'pie'"
+                    [colors]="pieChartColors">            
+                </canvas>
+            </div>
+            <br>
+        </div>
+        <br><br><br>
+      </div>
+    </div>
+  </div>
+</div>

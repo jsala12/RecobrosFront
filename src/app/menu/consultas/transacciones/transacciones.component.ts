@@ -1,0 +1,17 @@
+import { Component, OnInit } from '@angular/core';
+import { NgxSpinnerService } from 'ngx-spinner';
+
+@Component({
+  selector: 'app-transacciones',
+  templateUrl: './transacciones.component.html',
+  styleUrls: ['./transacciones.component.css']
+})
+export class TransaccionesComponent implements OnInit {
+
+  constructor(private spinner: NgxSpinnerService) { }
+  
+    ngOnInit() {
+      //this.spinner.show();
+    }
+
+}

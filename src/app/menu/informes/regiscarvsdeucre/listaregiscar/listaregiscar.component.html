@@ -1,0 +1,89 @@
+<div class="mat-elevation-z8">  
+  <br>
+  <div class="container">
+    <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+      <div class="col-8">
+        <div class="col-12">            
+          <mat-form-field style="width: 30%" appearance="outline">
+            <mat-label>Transacciones</mat-label>
+            <mat-select  [formControl]="toppingsTransacciones" multiple 
+            [errorStateMatcher]="matcher" id="cuentasCobrar" #cuentasCobrar>
+              <mat-option *ngFor="let cod of distinctTransacciones" [value]="cod.cod">
+                  {{cod.cod}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>&nbsp; &nbsp;
+          <mat-form-field appearance="outline" style="width: 40%">
+            <mat-label>Año-Mes Fecha Rechazo </mat-label>
+            <mat-select  [formControl]="toppingsMesesTransaccion" multiple 
+            [errorStateMatcher]="matcher">
+              <mat-option *ngFor="let mes of mesesTransaccion" [value]="mes.anoMes">
+                  {{mes.anoMes}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>&nbsp;  
+      </div>                
+      <div class="col-4" style="padding-top: 10px;">
+          <button mat-raised-button color="primary" (click)="filtrarTabla()" title="Filtrar reporte" >
+            <i class="material-icons">
+                search
+            </i>
+          </button>
+          &nbsp;&nbsp;
+          <button mat-raised-button color="secundary" (click)="cargarTodos()" title="Todos los registros">
+            <i class="material-icons">
+                list
+            </i>
+          </button>
+          &nbsp;&nbsp;<button mat-raised-button color="secundary" (click)="ExportTOExcel()" title="Exportar Hoja de Cálculo">Exportar <img src="./assets/icoExcel.png" alt="Hoja de cálculo" height="25"></button>
+      </div>
+    </div>
+  </div>  
+  <div class="example-container">
+  <table mat-table class="full-width-table" matSort aria-label="Elements">
+    <!-- Código Transacción Column -->
+    <ng-container matColumnDef="codigoTransaccion">
+      <th mat-header-cell *matHeaderCellDef style="width:300px; text-align: left" title="Código Transacción" mat-sort-header>Cod. Transacción</th>
+      <td mat-cell *matCellDef="let row">{{row.codigoTransaccion}}</td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <!-- Fecha Rechazo Column -->
+    <ng-container matColumnDef="fechaTransaccion">
+      <th mat-header-cell *matHeaderCellDef style="width:300px; text-align: left" title="Fecha de Transacción" mat-sort-header>F. Rechazo</th>
+      <td mat-cell *matCellDef="let row">{{row.fechaTransaccion}}</td>
+      <td mat-footer-cell *matFooterCellDef><b>Total:</b></td>
+    </ng-container>
+
+    <!-- Cantidad Column -->
+    <ng-container matColumnDef="cantidad">
+      <th mat-header-cell *matHeaderCellDef style="width:220px; text-align: left">Cantidad</th>
+      <td mat-cell *matCellDef="let row">{{row.cantidad}}</td>
+      <td mat-footer-cell *matFooterCellDef><b title="Cantidad total de todos los registros cargados">{{totalCantidad}}</b></td>
+    </ng-container>
+
+    <!-- Valor Column -->
+    <ng-container matColumnDef="valor">
+      <th mat-header-cell *matHeaderCellDef style="width:420px; text-align: left">Valor</th>
+      <td mat-cell *matCellDef="let row">{{row.valor}}</td>
+      <td mat-footer-cell *matFooterCellDef><b title="Valor total de todos los registros cargados">{{totalValor}}</b></td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-footer-row *matFooterRowDef="displayedColumns;"></tr>
+  </table>
+</div>
+  <mat-paginator #paginator
+      [length]="dataSource?.data.length"
+      [pageIndex]="0"
+      [pageSize]="4"
+      [pageSizeOptions]="[]">
+  </mat-paginator>
+  Existen <b>{{numeroFilas}}</b> filas para este reporte. 
+</div>
+
+  
+  
+  

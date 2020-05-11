@@ -1,0 +1,30 @@
+
+    <ngx-spinner
+        size="medium"
+        color="#fff"
+        type="ball-fussion"
+    >
+        <br>    
+        <img src="./assets/logo-bogota-blanco.png" alt="Logo del banco">
+    </ngx-spinner>
+    <ngx-alerts></ngx-alerts>
+<h5>
+    Consultas &nbsp;<mat-icon aria-hidden="false" aria-label="Example home icon" title="" style="vertical-align: bottom;">insert_chart</mat-icon>
+    <i class="material-icons" style="vertical-align: bottom;">navigate_next</i>
+    Excepcionados &nbsp;<mat-icon aria-hidden="false" aria-label="Example home icon" title="" style="vertical-align: bottom;">person_add_disabled</mat-icon>
+</h5>
+<mat-tab-group class="mat-elevation-z8">
+    <mat-tab label="Clientes Excepcionados">
+        <app-listaclientesexcepcionados></app-listaclientesexcepcionados>
+    </mat-tab>
+    <mat-tab label="Cuentas Excepcionadas">
+        <app-listacuentasexcepcionadas></app-listacuentasexcepcionadas>
+    </mat-tab>
+    <mat-tab label="Productos Excepcionados">
+        <app-listaexcepcionados></app-listaexcepcionados>
+    </mat-tab>
+    <mat-tab label="Transacciones Excepcionadas">
+        <app-listatransaccionesexcepcionadas></app-listatransaccionesexcepcionadas>
+    </mat-tab>
+</mat-tab-group>
+<!--<app-listaexcepcionados></app-listaexcepcionados>-->

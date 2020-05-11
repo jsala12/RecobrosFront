@@ -1,0 +1,98 @@
+<app-header></app-header>
+<br>
+<br>
+<div class="container-fluid" style="   padding-left: 0px; margin-left: -121px;">
+    <div class="container" style="margin-right: -25px;">
+        <div class="row">            
+            <div class="col-7">
+                <img src="./assets/background-login.png" alt="Imagen login" width="750px" height="573px" style="margin-top: -17px; margin-top: -48px; margin-left: -130px;">
+            </div>
+            <div class="col-5">   
+                <br>          
+                <mat-card style="text-align: center; background-color: rgba(19, 19, 129, 0.02); background-image: url('./assets/grafismo-bb.png');">
+                    <mat-card-title>
+                        <img src="./assets/banco-de-bogota.png" alt="Logo del banco" width="250px">
+                        <br>
+                        Iniciar sesión
+                    </mat-card-title>
+                    <br>
+                    <form [formGroup]="loginForm" (ngSubmit)="iniciarSesion()">
+                        <mat-card-content>
+                            <div class="example-container">
+                                <mat-form-field style="width: 70%;" appearance="outline">
+                                    <mat-label>Usuario</mat-label>
+                                    <input matInput [formControl]="loginControl" placeholder="Usuario" required id="usuario" #usuario>
+                                    <mat-icon matSuffix>person</mat-icon>
+                                    <mat-error *ngIf="loginControl.hasError('required')">
+                                        Usuario es <strong>requerido</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                                <br>
+                                <mat-form-field style="width: 70%;" appearance="outline">
+                                    <mat-label>Contraseña</mat-label>
+                                    <input matInput [formControl]="contrasenaControl" placeholder="Contraseña" [type]="hide ? 'password' : 'text'" required id="contrasena" #contrasena>
+                                    <button mat-icon-button matSuffix type="button" (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                                    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                    </button>
+                                    <mat-error *ngIf="contrasenaControl.hasError('required')">
+                                        Contraseña es <strong>requerida</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                                <br><br>
+                                <!--Botón ingresar-->    
+                                <span *ngIf="loginControl.hasError('required') || contrasenaControl.hasError('required')">
+                                    <button mat-button title="Complete los campos para iniciar sesión" (click)="iniciarSesion()" style="width: 70%; padding-top: 0px;
+                                    padding-bottom: 0px;float: center; color: white; background-color: rgba(0,0,0,.12);" disabled>Ingresar &nbsp;<mat-icon >check</mat-icon></button>
+                                </span>   
+                                <span *ngIf="!loginControl.hasError('required') && !contrasenaControl.hasError('required')">                  
+                                    <button mat-button type="submit" value="Acceder" title="Iniciar sesión" id="agregar" style="width: 70%; padding-top: 0px;
+                                    padding-bottom: 0px;float: center; color: white">Ingresar &nbsp;<mat-icon >check</mat-icon></button>
+                                </span>
+                            </div>
+                        </mat-card-content>
+                    </form>
+                    
+                    <br>
+                </mat-card>   
+                <!--<div class="panel panel-default">
+                    <div class="panel-heading"><h3>Ingresar</h3></div>
+                    <div class="panel-body">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label for="email" class="col-md-4 control-label">Usuario</label>    
+                                <div class="col-md-6">
+                                    <input id="usuario" type="text" class="form-control" name="usuario" [(ngModel)]="usuario" value="" autofocus>
+                                </div>
+                            </div>
+    
+                            <div class="form-group">
+                                <label for="password" class="col-md-4 control-label">Contraseña</label>
+    
+                                <div class="col-md-6">
+                                    <input id="password" type="password" class="form-control" name="password">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-8 col-md-offset-4">
+                                    <button class="btn btn-primary" (click)="irMenu()">
+                                        Ingresar
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>-->
+            </div>            
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>
+<ngx-spinner
+    size="medium"
+    color="#fff"
+    type="ball-fussion"
+>
+<br>    
+<img src="./assets/logo-bogota-blanco.png" alt="Logo del banco">
+</ngx-spinner>
+<ngx-alerts></ngx-alerts>

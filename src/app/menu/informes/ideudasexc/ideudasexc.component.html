@@ -1,0 +1,25 @@
+<ngx-spinner
+size="medium"
+color="#fff"
+type="ball-fussion"
+>
+<br>    
+<img src="./assets/logo-bogota-blanco.png" alt="Logo del banco">
+</ngx-spinner>
+<ngx-alerts></ngx-alerts>
+<h5>
+Informes &nbsp;<mat-icon aria-hidden="false" aria-label="Example home icon" title="" style="vertical-align: bottom;">table_chart</mat-icon>
+<i class="material-icons" style="vertical-align: bottom;">navigate_next</i>
+Deudas excepcionadas &nbsp;<mat-icon aria-hidden="false" aria-label="Example home icon" title="" style="vertical-align: bottom;">bar_chart</mat-icon>
+</h5>
+<mat-tab-group class="mat-elevation-z8">
+<mat-tab label="Excepción por Cuenta">
+<app-exccuenta></app-exccuenta>
+</mat-tab>
+<mat-tab label="Excepción por Cliente">
+<app-exccliente></app-exccliente>
+</mat-tab>
+<mat-tab label="Excepción por Producto">
+<app-excproducto></app-excproducto>
+</mat-tab>
+</mat-tab-group>

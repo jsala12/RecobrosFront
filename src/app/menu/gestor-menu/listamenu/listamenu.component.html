@@ -1,0 +1,269 @@
+<div class="container-fluid">
+  <div class="container">
+    <br>
+    <div class="row">
+        <div class="col-6">
+          Existen <span class="badge badge-pill badge-info">{{dataSource?.data.length}}</span> menús.
+        </div>
+      <div class="col-5">
+        <button mat-mini-fab id="agregar" title="Agregar un menú" data-toggle="modal" data-target="#InsertarMenu" style="padding-top: 0px;
+        padding-bottom: 0px; float: left; " data-backdrop="false" (click)="agregarRegistro()">
+          <i class="material-icons" id="icono">
+            add
+          </i>
+        </button>
+      </div>
+      <div class="col-1"></div>
+    </div>
+    <br>
+  </div>
+</div> 
+<div class="mat-elevation-z8">
+  <table mat-table class="full-width-table" matSort aria-label="Elements">
+    <!-- Id Column 
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef >Id</th>
+      <td mat-cell *matCellDef="let row">{{row.id}}</td>
+    </ng-container>
+    -->
+
+    <!-- Nombre Column -->
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef  style="width: 150px;">Nombre</th>
+      <td mat-cell *matCellDef="let row">{{row.nombre}}</td>
+    </ng-container>
+
+    <!-- Nombre Icono Column -->
+    <ng-container matColumnDef="nombreIcono">
+        <th mat-header-cell *matHeaderCellDef  style="width: 150px;">Nombre Icono</th>
+        <td mat-cell *matCellDef="let row">{{row.nombreIcono}}</td>
+    </ng-container>
+
+    <!-- Menú Padre Column -->
+    <ng-container matColumnDef="menuPadre">
+        <th mat-header-cell *matHeaderCellDef  style="width: 150px;">Menú Padre</th>
+        <td mat-cell *matCellDef="let row">
+          <label *ngIf="row.menuPadre== null">No tiene padre</label>
+          <label *ngIf="row.menuPadre!= null">{{row.menuPadre}}</label>          
+        </td>
+    </ng-container>
+
+    <!-- Descripción Column -->
+    <ng-container matColumnDef="descripcion">
+        <th mat-header-cell *matHeaderCellDef  style="width: 450px;">Descripción</th>
+        <td mat-cell *matCellDef="let row">{{row.descripcion}}</td>
+    </ng-container>
+
+     <!-- Editar Column -->
+     <ng-container matColumnDef="editar">
+      <th mat-header-cell *matHeaderCellDef ></th>
+      <td mat-cell *matCellDef="let row">
+        <button mat-mini-fab color="primary" title="Editar menú {{row.nombre}}" (click)="editarRegistro(row)" data-toggle="modal" data-target="#exampleModal" data-backdrop="false" style="padding-top: 0px;
+        padding-bottom: 0px;float: left;"> <i class="material-icons" id="icono">edit</i></button>
+      </td>
+    </ng-container>
+
+    <!-- Eliminar Column -->
+    <ng-container matColumnDef="eliminar">
+      <th mat-header-cell *matHeaderCellDef ></th>        
+      <td mat-cell *matCellDef="let row">
+        <button mat-mini-fab title="Eliminar menú {{row.nombre}}" id="eliminar" (click)="eliminarRegistro(row)" data-toggle="modal" data-target="#exampleModalE" data-backdrop="false" style="padding-top: 0px;
+        padding-bottom: 0px;float: left;"><i class="material-icons" id="icono">delete</i> </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator #paginator
+      [length]="dataSource?.data.length"
+      [pageIndex]="0"
+      [pageSize]="5"
+      [pageSizeOptions]="">
+  </mat-paginator>
+</div>
+
+<!-- Modal Insertar -->
+<div class="modal fade" id="InsertarMenu" aria-labelledby="exampleModalLabel" style="background-color:  rgba(7, 65, 7, 0.5)">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document" >
+    <div class="modal-content" >
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{headerModal}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+          <div class="col-3"></div>
+          <div class="col-6">
+            <br>
+            <form class="example-form">
+              <!--Input nombre menú-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Nombre menú</mat-label>
+                <input matInput placeholder="Nombre menú" [formControl]="nombreControl"
+                        [errorStateMatcher]="matcher" type="text" value="{{nombre}}" id="nombreMI" #nombreMI required>
+                        <mat-icon matSuffix>drag_handle</mat-icon>
+                        <mat-error *ngIf="nombreControl.hasError('required')">
+                  Nombre menú es <strong>requerido</strong>
+                </mat-error>
+              </mat-form-field>
+              <br>   
+              <!--Input icono menú-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                  <mat-label>Ícono menú</mat-label>
+                  <input matInput placeholder="Ícono menú" [formControl]="iconoControl"
+                          [errorStateMatcher]="matcher" type="text" value="{{icono}}" id="iconoMI" #iconoMI required>
+                  <!--Cambio--><a matSuffix href="https://material.io/resources/icons" target="_blank" title="Busque el ícono apropiado en Material Design, copie el nombre y peguelo en este campo. Haga click aquí para ver los íconos."><mat-icon>error</mat-icon></a>
+                  <mat-error *ngIf="iconoControl.hasError('required')">
+                    Ícono menú es <strong>requerido</strong>
+                  </mat-error>
+              </mat-form-field>
+                <br>            
+              <!--Input menú padre-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Menú padre</mat-label>
+                <mat-select  [(value)]="selectedMenuP" placeholder="Seleccione menú padre" 
+                [errorStateMatcher]="matcher" >
+                  <mat-option *ngFor="let menuP of menusP" [value]="menuP.nombre">
+                    {{ menuP.nombre }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <br>
+              <!--Input descripcion-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                <mat-label>Descripción</mat-label>
+                <input matInput [formControl]="descripcionControl"
+                        [errorStateMatcher]="matcher" type="text" matInput placeholder="Descripción" value="{{descripcion}}" #descripcionI required id="descripcionI">
+                <mat-icon matSuffix>text_format</mat-icon>
+                <mat-error *ngIf="descripcionControl.hasError('required')">
+                  Descripción es <strong>requerida</strong>
+                </mat-error>
+              </mat-form-field>
+              <br><br>  
+              <!--Botón guardar--> 
+              <span *ngIf="nombreControl.hasError('required') || iconoControl.hasError('required') || descripcionControl.hasError('required')">
+                  <button mat-raised-button title="Complete los campos para guardar menú" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white" disabled><i class="material-icons"id="icono">save</i>&nbsp;Guardar</button>
+              </span>   
+              <span *ngIf="!nombreControl.hasError('required') && !iconoControl.hasError('required') && !descripcionControl.hasError('required')">                  
+                <button mat-raised-button title="Guardar menú" id="agregar" (click)="operacionRegistro(3, nombreMI.value, iconoMI.value, descripcionI.value)" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white"><i class="material-icons"id="icono">save</i>&nbsp;Guardar</button>
+              </span>           
+              <br><br><br>
+            </form>                  
+          </div>
+          <div class="col-3"></div>
+        </div>
+      </div>   
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar -->
+<div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" style="background-color:  rgba(9, 13, 48, 0.5)">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{headerModal}} </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+            <div class="col-3"></div>
+            <div class="col-6">
+              <br>
+              <!--Input nombre menú-->
+              <mat-form-field class="example-full-width" appearance="outline">
+                  <mat-label>Nombre menú</mat-label>
+                  <input matInput placeholder="Nombre menú" [formControl]="nombreControlE"
+                          [errorStateMatcher]="matcher" type="text" value="{{nombre}}" id="nombreME" #nombreME required>
+                          <mat-icon matSuffix>drag_handle</mat-icon>
+                          <mat-error *ngIf="nombreControlE.hasError('required')">
+                    Nombre menú es <strong>requerido</strong>
+                  </mat-error>
+                </mat-form-field>
+                <br>   
+                <!--Input icono menú-->
+                <mat-form-field class="example-full-width" appearance="outline">
+                    <mat-label>Ícono menú</mat-label>
+                    <input matInput placeholder="Icono menú" [formControl]="iconoControlE"
+                            [errorStateMatcher]="matcher" type="text" value="{{icono}}" id="iconoME" #iconoME required>
+                    <!--Cambio--><a matSuffix href="https://material.io/resources/icons" target="_blank" title="Busque el ícono apropiado en Material Design, copie el nombre y peguelo en este campo. Haga click aquí para ver los íconos."><mat-icon>error</mat-icon></a>
+                    <mat-error *ngIf="iconoControlE.hasError('required')">
+                      Ícono menú es <strong>requerido</strong>
+                    </mat-error>
+                </mat-form-field>
+                  <br>            
+                <!--Input menú padre-->
+                <mat-form-field class="example-full-width" appearance="outline">
+                  <mat-label>Menú padre</mat-label>
+                  <mat-select  [(value)]="selectedMenuP" placeholder="Seleccione menú padre" 
+                  [errorStateMatcher]="matcher" >
+                    <mat-option *ngFor="let menuP of menusP" [value]="menuP.nombre">
+                      {{ menuP.nombre }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <br>
+                <!--Input descripcion-->
+                <mat-form-field class="example-full-width" appearance="outline">
+                  <mat-label>Descripción</mat-label>
+                  <input matInput [formControl]="descripcionControlE"
+                          [errorStateMatcher]="matcher" type="text" matInput placeholder="Descripción" value="{{descripcion}}" #descripcionE required id="descripcionE">
+                  <mat-icon matSuffix>text_format</mat-icon>
+                  <mat-error *ngIf="descripcionControlE.hasError('required')">
+                    Descripción es <strong>requerida</strong>
+                  </mat-error>
+                </mat-form-field>
+              <br><br>
+              <!--Botón actualizar-->    
+              <span *ngIf="nombreControlE.hasError('required') || iconoControlE.hasError('required') || descripcionControlE.hasError('required')">
+                  <button mat-raised-button title="Complete los campos para actualizar menú" color="primary" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white" disabled><i class="material-icons" id="icono">save</i>&nbsp;Actualizar</button>
+              </span>   
+              <span *ngIf="!nombreControlE.hasError('required') && !iconoControlE.hasError('required') && !descripcionControlE.hasError('required')">                  
+                <button mat-raised-button title="Actualizar menú" color="primary" (click)="operacionRegistro(1, nombreME.value, iconoME.value, descripcionE.value)" data-dismiss="modal" style="padding-top: 0px;
+                  padding-bottom: 0px;float: left; color: white"><i class="material-icons"id="icono">save</i>&nbsp;Actualizar</button>
+              </span>
+              <br><br><br>      
+            </div>
+          <div class="col-3"></div>
+        </div>
+      </div>      
+    </div>
+  </div>
+</div>
+
+<!-- Modal Eliminar -->
+<div class="modal fade" id="exampleModalE" aria-labelledby="exampleModalLabel" style="background-color:  rgba(48, 9, 9, 0.5)">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> {{headerModal}} </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="row" style="margin-top: -20px; margin-bottom: -30px;">
+              <div class="col-1"></div>
+              <div class="col-10">
+              <br>
+              ¿Desea eliminar el menú {{nombre}}?
+              <br><br>
+          <button mat-raised-button id="eliminar" title="Eliminar menú" (click)="operacionRegistro(2, '', '', '')" data-dismiss="modal" style="padding-top: 0px;
+          padding-bottom: 0px;float: left; color: white;"><i class="material-icons" id="icono">delete</i> Eliminar </button>        
+          <br> <br> <br>      
+        </div>
+        <div class="col-1"></div>
+        </div>
+      </div>    
+    </div>
+  </div>
+</div>
